@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* styles/globals.css or a similar global CSS file */
+
+.header {
+	transition:
+		background-color 0.3s ease,
+		color 0.3s ease;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 4rem; /* Adjust based on your header height */
+	z-index: 50;
+	padding: 0 1.25rem; /* Adjust based on your padding */
+}
+
+.header.transparent {
+	background-color: transparent;
+}
+
+.header.scrolled {
+	background-color: white;
+}

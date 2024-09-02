@@ -18,7 +18,22 @@ const config = {
 			},
 		},
 		extend: {
+			fontFamily: {
+				playfair: ['"Playfair Display"', "serif"],
+			},
 			colors: {
+				navy: {
+					DEFAULT: "#101b4b", // Main navy color
+					light: "#545e85", // Lighter navy color
+				},
+				yellow: {
+					DEFAULT: "#f6d673", // Yellow color
+					dark: "#f1c40f", // Darker yellow for dark mode
+				},
+				grei: {
+					light: "#a3a8b2", // Lighter gray
+					DEFAULT: "#e7e7e7", // Main gray color
+				},
 				border: "hsl(var(--border))",
 				input: "hsl(var(--input))",
 				ring: "hsl(var(--ring))",
@@ -71,6 +86,13 @@ const config = {
 			animation: {
 				"accordion-down": "accordion-down 0.2s ease-out",
 				"accordion-up": "accordion-up 0.2s ease-out",
+			},
+			fontSize: {
+				h1: "3rem", // Font size for h1
+				h2: "2rem", // Font size for h2
+				h3: "1.5rem", // Font size for h3
+				h4: "20px",
+				title: "100px",
 			},
 		},
 	},
