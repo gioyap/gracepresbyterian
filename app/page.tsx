@@ -1,6 +1,26 @@
+"use client";
+import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Index() {
+	const [whoLoad, setWhoLoading] = useState(false);
+	const [whereLoad, setWhereLoading] = useState(false);
+	const router = useRouter();
+
+	const handleWho = () => {
+		setWhoLoading(true);
+		setTimeout(() => {
+			router.push("/about");
+		}, 1000);
+	};
+	const handleWhere = () => {
+		setWhereLoading(true);
+		setTimeout(() => {
+			router.push("/location");
+		}, 1000);
+	};
+
 	return (
 		<main className="flex-1 flex flex-col gap-12">
 			{/* Hero Section */}
@@ -16,25 +36,27 @@ export default function Index() {
 				<div className="absolute inset-0 bg-black opacity-30"></div>
 				{/* Hero Content */}
 				<div className="relative z-10 flex flex-col items-center justify-center h-full text-center p-5">
-					<h1 className="text-h1 font-bold mb-4 text-navy dark:text-white">
+					<h1 className="text-h1 font-bold mb-4 text-navy">
 						Welcome to Grace Presbyterian Church
 					</h1>
-					<p className="text-lg mb-6 text-navy dark:text-white">
+					<p className="text-lg mb-6 text-navy ">
 						A place where faith, community, and worship come together.
 					</p>
 					<div className="flex gap-4">
-						<Link
-							href="#about"
-							className="bg-yellow dark:bg-background text-navy dark:text-white py-2 px-4 rounded-xl font-semibold hover:bg-navy-light"
+						<button
+							onClick={handleWho}
+							className="bg-yellow dark:bg-yellow text-navy py-2 px-4 rounded-xl font-semibold hover:bg-navy-light dark:hover:bg-navy-light"
+							disabled={whoLoad}
 						>
-							Who we are
-						</Link>
-						<Link
-							href="#location"
-							className="bg-yellow dark:bg-background text-navy dark:text-white py-2 px-4 rounded-xl font-semibold hover:bg-navy-light"
+							{whoLoad ? "Loading..." : "Who we are"}
+						</button>
+						<button
+							onClick={handleWhere}
+							className="bg-yellow dark:bg-yellow text-navy py-2 px-4 rounded-xl font-semibold hover:bg-navy-light dark:hover:bg-navy-light"
+							disabled={whereLoad}
 						>
-							Where we are
-						</Link>
+							{whereLoad ? "Loading..." : "Where we are"}
+						</button>
 					</div>
 				</div>
 			</section>

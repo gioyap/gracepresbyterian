@@ -17,9 +17,15 @@
 }
 
 .header.transparent {
-	background-color: transparent;
+	background-color: black;
+	opacity: 0.8;
 }
 
 .header.scrolled {
+	@apply text-foreground;
 	background-color: white;
+}
+
+.dark .header.scrolled {
+	background-color: black;
 }

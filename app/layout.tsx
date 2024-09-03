@@ -45,7 +45,7 @@ export default function RootLayout({
 							</nav>
 							{/* Main Body */}
 							<div className="flex w-full flex-col p-0">{children}</div>
-							<footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16 p-0">
+							<footer className="w-full flex items-center justify-center border-t mx-auto text-center sm:text-xs gap-8 py-5 p-0 ">
 								<p>
 									<a
 										href="https://www.facebook.com/presbyterian.church.984"
@@ -56,6 +56,16 @@ export default function RootLayout({
 										Grace Presbyterian Church
 									</a>{" "}
 									2024
+								</p>
+								<p>
+									<a href="/terms" className="font-bold hover:underline">
+										Terms and Condition
+									</a>
+								</p>
+								<p>
+									<a href="/policy" className="font-bold hover:underline">
+										Private Policy
+									</a>
 								</p>
 								<ThemeSwitcher />
 							</footer>
