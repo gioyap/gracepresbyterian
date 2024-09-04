@@ -1,14 +1,113 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { IoLogoYoutube } from "react-icons/io5";
 import { ImFacebook2 } from "react-icons/im";
+import { createClient } from "@/utils/supabase/client";
+
+const fetchThumbnails = async (ids: number[]) => {
+	const supabase = createClient();
+
+	const { data: matthew, error: matthewError } = await supabase
+		.from("matthew")
+		.select("*")
+		.in("id", ids);
+
+	if (matthewError) {
+		console.error("Matthew thumbnails error:", matthewError);
+		return { matthew: [], john: [] };
+	}
+
+	const { data: john, error: johnError } = await supabase
+		.from("john")
+		.select("*")
+		.in("id", ids);
+
+	if (johnError) {
+		console.error("John thumbnails error:", johnError);
+		return { matthew: matthew, john: [] };
+	}
+
+	const bucketUrl =
+		"https://bbsjgxlprzouzklvfhwf.supabase.co/storage/v1/object/public/thumbnails/";
+
+	const formattedMatthew = matthew.map((thumbnail: any) => ({
+		...thumbnail,
+		imgSrc: `${bucketUrl}${thumbnail.imgSrc}`,
+	}));
+
+	const formattedJohn = john.map((thumbnail: any) => ({
+		...thumbnail,
+		imgSrc: `${bucketUrl}${thumbnail.imgSrc}`,
+	}));
+
+	return { matthew: formattedMatthew, john: formattedJohn };
+};
+
+const fetchSpecialThumbnails = async () => {
+	const supabase = createClient();
+
+	// Fetch thumbnails from 'special' table
+	const { data, error } = await supabase.from("special").select("*");
+
+	if (error) {
+		console.error("Error fetching special thumbnails:", error);
+		return [];
+	}
+
+	const bucketUrl =
+		"https://bbsjgxlprzouzklvfhwf.supabase.co/storage/v1/object/public/thumbnails/";
+
+	const formattedThumbnails = data.map((thumbnail: any) => ({
+		...thumbnail,
+		imgSrc: `${bucketUrl}${thumbnail.imgSrc}`,
+	}));
+
+	return formattedThumbnails;
+};
+
+interface Thumbnail {
+	id: number;
+	href: string;
+	imgSrc: string;
+	title: string;
+	altText?: string;
+}
+
+interface ThumbnailsData {
+	matthew: Thumbnail[];
+	john: Thumbnail[];
+}
 
 const Page = () => {
+	const [thumbnailsData, setThumbnailsData] = useState<ThumbnailsData>({
+		matthew: [],
+		john: [],
+	});
+	const [thumbnails, setThumbnails] = useState<Thumbnail[]>([]);
+
+	useEffect(() => {
+		const getThumbnails = async () => {
+			// Pass specific ids (e.g., [1, 2, 3]) to fetch only those thumbnails
+			const thumbnails = await fetchThumbnails([1, 2, 3]);
+			setThumbnailsData(thumbnails);
+		};
+		getThumbnails();
+	}, []);
+
+	useEffect(() => {
+		const getThumbnails = async () => {
+			const specialThumbnails = await fetchSpecialThumbnails();
+			setThumbnails(specialThumbnails);
+		};
+
+		getThumbnails();
+	}, []);
+
 	return (
 		<div>
 			{/* Hero Section */}
 			<section
-				className="relative w-screen h-[300px] overflow-hidden flex items-center justify-end"
+				className="relative w-screen h-[300px] flex items-center justify-end"
 				style={{
 					backgroundImage: "url('/images/worship.jpg')",
 					backgroundSize: "cover",
@@ -22,12 +121,15 @@ const Page = () => {
 				</div>
 			</section>
 			<section className="p-6 bg-black">
-				<div className="max-w-screen-2xl mx-auto my-8">
+				<h1 className=" text-h1 text-white font-bold text-center mb-2">
+					Cristology
+				</h1>
+				<div className="max-w-screen-2xl mx-auto mb-8">
 					<iframe
 						width="100%"
-						height="900"
-						src="https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2Fpresbyterian.church.984%2Fvideos%2F1181275816273744%2F&show_text=false&width=560&t=0"
-						title="Matthew 13:53-58"
+						height="800"
+						src="https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2Fpresbyterian.church.984%2Fvideos%2F1116432625917264%2F&show_text=false&width=560&t=0"
+						title="Cristology"
 						frameBorder="0"
 						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 						allowFullScreen
@@ -47,7 +149,7 @@ const Page = () => {
 					</div>
 					<div className="flex justify-center gap-6 text-white text-h1">
 						<a
-							href="https://www.youtube.com/@calumpitgracepresbyterianc2049"
+							href="https://www.youtube.com/@calumpitgrace"
 							target="_blank"
 							rel="noopener noreferrer"
 							className="hover:text-yellow transition-colors"
@@ -66,57 +168,96 @@ const Page = () => {
 				</div>
 			</section>
 			<section className="p-6">
-				<div className="max-w-screen-lg mx-auto text-center text-navy">
+				<div className="max-w-screen-xl mx-auto text-center text-navy">
 					<h1 className="text-h1 font-bold mb-4">Online Messages</h1>
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-						{/* Thumbnail Item */}
-						<a
-							href="/watch/matthew-12-1-8"
-							className="bg-white rounded-xl shadow-lg overflow-hidden block"
-						>
-							<img
-								src="/images/worship.jpg"
-								alt="Message Thumbnail"
-								className="w-full h-40 object-cover"
-							/>
-							<div className="p-4">
-								<p className="md:text-h4">Matthew 12: 46-50</p>
-							</div>
-						</a>
 
-						<a
-							href="/watch/matthew-12-33-37"
-							className="bg-white rounded-xl shadow-lg overflow-hidden block"
-						>
-							<img
-								src="/images/city.jpg"
-								alt="Message Thumbnail"
-								className="w-full h-40 object-cover"
-							/>
-							<div className="p-4">
-								<p className="md:text-h4">Matthew 12: 33-37</p>
+					{/* Two-column layout for Matthew and John */}
+					<div className="grid grid-cols-1 md:grid-cols-2">
+						{/* Left column: Book of Matthew */}
+						<div>
+							<h2 className="text-h2 font-bold mb-4">Book of Matthew</h2>
+							<div className="flex space-x-4 justify-center">
+								{thumbnailsData.matthew.map((thumbnail: any) => (
+									<a
+										key={thumbnail.id}
+										href={thumbnail.href}
+										className="bg-white rounded-xl shadow-2xl block w-40 transform duration-300 hover:scale-105 hover:shadow-3xl relative z-10"
+									>
+										<img
+											src={thumbnail.imgSrc}
+											alt={thumbnail.altText || "Message Thumbnail"}
+											className="w-full h-24 object-cover rounded-t-xl"
+										/>
+										<div className="p-2">
+											<p className="md:text-h4 text-sm">{thumbnail.title}</p>
+										</div>
+									</a>
+								))}
 							</div>
-						</a>
-						<a
-							href="/watch/matthew-12-24-30"
-							className="bg-white rounded-xl shadow-lg overflow-hidden block"
-						>
-							<img
-								src="/images/contact.jpg"
-								alt="Message Thumbnail"
-								className="w-full h-40 object-cover"
-							/>
-							<div className="p-4">
-								<p className="md:text-h4">Matthew 12: 24-30</p>
+							<a
+								href="/watch/matthew"
+								className="mt-6 inline-block text-white font-bold hover:bg-yellow hover:text-navy bg-navy p-2 rounded-xl"
+							>
+								See Previous Messages
+							</a>
+						</div>
+
+						{/* Right column: Book of John */}
+						<div>
+							<h2 className="text-h2 font-bold mb-4">Book of John</h2>
+							<div className="flex space-x-4 justify-center">
+								{thumbnailsData.john.map((thumbnail: any) => (
+									<a
+										key={thumbnail.id}
+										href={thumbnail.href}
+										className="bg-white rounded-xl shadow-2xl block w-40 transform duration-300 hover:scale-105 hover:shadow-3xl relative z-10"
+									>
+										<img
+											src={thumbnail.imgSrc}
+											alt={thumbnail.altText || "Message Thumbnail"}
+											className="w-full h-24 object-cover rounded-t-xl"
+										/>
+										<div className="p-2">
+											<p className="md:text-h4 text-sm">{thumbnail.title}</p>
+										</div>
+									</a>
+								))}
 							</div>
-						</a>
+							<a
+								href="/watch/john"
+								className="mt-6 inline-block text-white font-bold hover:bg-yellow hover:text-navy bg-navy p-2 rounded-xl"
+							>
+								See Previous Messages
+							</a>
+						</div>
 					</div>
-					<a
-						href="/watch/online-messages"
-						className="mt-6 inline-block text-white font-bold hover:bg-yellow hover:text-navy bg-navy p-2 rounded-xl"
-					>
-						See Previous Messages
-					</a>
+				</div>
+			</section>
+
+			<section className="p-6 max-w-screen-xl mx-auto">
+				<div>
+					<h1 className="text-h1 text-center font-bold text-navy">
+						Special Messages
+					</h1>
+					<div className="flex space-x-4 justify-center my-8 text-center">
+						{/* Render special thumbnails dynamically */}
+						{thumbnails.map((thumbnail) => (
+							<a
+								key={thumbnail.id}
+								href={thumbnail.href}
+								className="bg-white rounded-xl shadow-2xl block w-70 transform duration-300 hover:scale-105 hover:shadow-3xl relative z-10"
+							>
+								<img
+									src={thumbnail.imgSrc}
+									alt={thumbnail.altText || "Message Thumbnail"}
+									className="w-full h-40 object-cover rounded-t-xl"
+								/>
+								<div className="p-2">
+									<p className="md:text-h4 text-sm">{thumbnail.title}</p>
+								</div>
+							</a>
+						))}
+					</div>
 				</div>
 			</section>
 		</div>

@@ -33,7 +33,7 @@ export default function About() {
 			{/* Our Mission */}
 			<section className="flex items-center justify-center bg-background border-b-2 border-yellow">
 				<div className="max-w-screen-lg mx-auto text-center">
-					<div className=" text-navy dark:text-white text-h3 pb-">
+					<div className=" text-navy dark:text-white text-h3">
 						<p>
 							We are a movement of men and women who have encountered God and
 							committed our lives to the Lord, focused on making an impact
@@ -43,7 +43,7 @@ export default function About() {
 					</div>
 					<h1
 						onClick={toggleMission}
-						className="text-h1 mb-4 font-bold cursor-pointer text-navy dark:text-white"
+						className="text-h1 mt-10 mb-4 font-bold cursor-pointer text-navy dark:text-white"
 					>
 						Our Mission
 					</h1>
