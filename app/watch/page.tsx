@@ -107,7 +107,7 @@ const Page = () => {
 		<div>
 			{/* Hero Section */}
 			<section
-				className="relative w-screen h-[300px] flex items-center justify-end"
+				className="relative w-screen h-[200px] md:h-[300px] flex items-center justify-end"
 				style={{
 					backgroundImage: "url('/images/worship.jpg')",
 					backgroundSize: "cover",
@@ -116,24 +116,23 @@ const Page = () => {
 				}}
 			>
 				<div className="absolute inset-0 bg-navy opacity-70"></div>
-				<div className="text-white text-title font-bold whitespace-nowrap mr-20 absolute">
+				<div className="text-white text-h2 md:text-h1 lg:text-title font-bold whitespace-nowrap mr-6 md:mr-20 absolute">
 					<h1>Watch</h1>
 				</div>
 			</section>
 			<section className="p-6 bg-black">
-				<h1 className=" text-h1 text-white font-bold text-center mb-2">
+				<h1 className=" text-h2 md:text-h1 text-white font-bold text-center mb-2">
 					Cristology
 				</h1>
 				<div className="max-w-screen-2xl mx-auto mb-8">
 					<iframe
 						width="100%"
-						height="800"
 						src="https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2Fpresbyterian.church.984%2Fvideos%2F1116432625917264%2F&show_text=false&width=560&t=0"
 						title="Cristology"
 						frameBorder="0"
 						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 						allowFullScreen
-						className="w-full"
+						className="w-full h-[200px] md:h-[400px] lg:h-[580px] xl:h-[740px] 2xl:h-[800px]"
 					></iframe>
 				</div>
 			</section>
@@ -141,13 +140,15 @@ const Page = () => {
 			<section className="p-6 text-center bg-gradient-to-r from-navy to-yellow">
 				<div className="max-w-screen-lg mx-auto">
 					<div className="text-white mb-6">
-						<h1 className="text-h1 font-bold">Broadcast Channels</h1>
+						<h1 className=" text-h2 md:text-h1 font-bold pb-2">
+							Broadcast Channels
+						</h1>
 						<p className="md:text-h4">
 							Whether it be online, we’ve got you covered! Catch us on these
 							channels:
 						</p>
 					</div>
-					<div className="flex justify-center gap-6 text-white text-h1">
+					<div className="flex justify-center gap-6 text-white text-h2 md:text-h1">
 						<a
 							href="https://www.youtube.com/@calumpitgrace"
 							target="_blank"
@@ -169,13 +170,17 @@ const Page = () => {
 			</section>
 			<section className="p-6">
 				<div className="max-w-screen-xl mx-auto text-center text-navy">
-					<h1 className="text-h1 font-bold mb-4">Online Messages</h1>
+					<h1 className=" text-h2 md:text-h1 font-bold mb-4">
+						Online Messages
+					</h1>
 
 					{/* Two-column layout for Matthew and John */}
-					<div className="grid grid-cols-1 md:grid-cols-2">
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
 						{/* Left column: Book of Matthew */}
 						<div>
-							<h2 className="text-h2 font-bold mb-4">Book of Matthew</h2>
+							<h2 className=" text-h3 md:text-h2 font-bold mb-4">
+								Book of Matthew
+							</h2>
 							<div className="flex space-x-4 justify-center">
 								{thumbnailsData.matthew.map((thumbnail: any) => (
 									<a
@@ -196,7 +201,7 @@ const Page = () => {
 							</div>
 							<a
 								href="/watch/matthew"
-								className="mt-6 inline-block text-white font-bold hover:bg-yellow hover:text-navy bg-navy p-2 rounded-xl"
+								className="mt-6 inline-block text-white font-bold hover:bg-yellow hover:text-navy bg-navy p-2 rounded-xl px-4"
 							>
 								See Previous Messages
 							</a>
@@ -204,7 +209,9 @@ const Page = () => {
 
 						{/* Right column: Book of John */}
 						<div>
-							<h2 className="text-h2 font-bold mb-4">Book of John</h2>
+							<h2 className="text-h3 md:text-h2 font-bold mb-4 mt-8 md:mt-0">
+								Book of John
+							</h2>
 							<div className="flex space-x-4 justify-center">
 								{thumbnailsData.john.map((thumbnail: any) => (
 									<a
@@ -225,7 +232,7 @@ const Page = () => {
 							</div>
 							<a
 								href="/watch/john"
-								className="mt-6 inline-block text-white font-bold hover:bg-yellow hover:text-navy bg-navy p-2 rounded-xl"
+								className="mt-6 inline-block text-white font-bold hover:bg-yellow hover:text-navy bg-navy p-2 rounded-xl px-4"
 							>
 								See Previous Messages
 							</a>
@@ -234,18 +241,18 @@ const Page = () => {
 				</div>
 			</section>
 
-			<section className="p-6 max-w-screen-xl mx-auto">
+			<section className="p-6 max-w-screen-xl mx-auto px-10">
 				<div>
-					<h1 className="text-h1 text-center font-bold text-navy">
+					<h1 className="text-h2 md:text-h1 text-center font-bold text-navy">
 						Special Messages
 					</h1>
-					<div className="flex space-x-4 justify-center my-8 text-center">
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 my-8">
 						{/* Render special thumbnails dynamically */}
 						{thumbnails.map((thumbnail) => (
 							<a
 								key={thumbnail.id}
 								href={thumbnail.href}
-								className="bg-white rounded-xl shadow-2xl block w-70 transform duration-300 hover:scale-105 hover:shadow-3xl relative z-10"
+								className="bg-white rounded-xl shadow-2xl block transform duration-300 hover:scale-105 hover:shadow-3xl relative z-10"
 							>
 								<img
 									src={thumbnail.imgSrc}

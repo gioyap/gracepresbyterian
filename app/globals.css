@@ -16,11 +16,6 @@
 	padding: 0 1.25rem; /* Adjust based on your padding */
 }
 
-.header.transparent {
-	background-color: black;
-	opacity: 0.8;
-}
-
 .header.scrolled {
 	@apply text-foreground;
 	background-color: white;

@@ -45,7 +45,7 @@ export default function RootLayout({
 							</nav>
 							{/* Main Body */}
 							<div className="flex w-full flex-col p-0">{children}</div>
-							<footer className="w-full flex items-center justify-center border-t mx-auto text-center sm:text-xs gap-8 py-5 p-0 ">
+							<footer className="w-full flex items-center justify-center border-t mx-auto text-center text-[8px] md:text-[12px] gap-8 py-2 md:py-5 p-0 ">
 								<p>
 									<a
 										href="https://www.facebook.com/presbyterian.church.984"

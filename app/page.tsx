@@ -63,10 +63,10 @@ export default function Index() {
 
 			{/* Mission Statement */}
 			<section className="text-center max-w-screen-lg mx-auto">
-				<h2 className="sm:text-xl md:text-h1 font-bold mb-6 text-navy dark:text-white">
+				<h2 className="text-h2 md:text-h1 font-bold mb-6 text-navy dark:text-white">
 					Our Mission
 				</h2>
-				<p className="sm:text-lg md:text-h4 mb-6 text-navy dark:text-white">
+				<p className="sm:text-lg md:text-h4 mb-6 text-navy dark:text-white px-6 md:px-0">
 					At Grace Presbyterian Church, our mission is to nurture a community of
 					faith, provide support and growth opportunities for our members, and
 					make a positive difference in the world through our outreach programs
@@ -81,7 +81,7 @@ export default function Index() {
 			</section>
 
 			{/* New Section - Looking for Answers */}
-			<section className="bg-yellow dark:bg-background text-navy dark:text-white ">
+			<section className="bg-yellow dark:bg-background text-navy dark:text-white px-6 md:px-0">
 				<div className=" py-10 max-w-screen-lg mx-auto">
 					<h2 className="sm:text-2xl md:text-h2 font-semibold text-center mb-8 ">
 						LOOKING FOR ANSWERS? THINK YOUR VISITING THIS SITE IS A COINCIDENCE?
