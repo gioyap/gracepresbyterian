@@ -3,24 +3,24 @@ import React from "react";
 const page = () => {
 	return (
 		<div>
-			<section className="pt-20 pb-10 bg-background">
-				<div className="max-w-screen-lg mx-auto px-4">
-					<h1 className="text-h1 font-bold text-navy dark:text-white mb-6 text-center">
+			<section className="pt-20 pb-10 bg-background px-6">
+				<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg mx-auto ">
+					<h1 className="text-h2 lg:text-h1 font-bold text-navy dark:text-white mb-6 text-center">
 						Grace Presbyterian Doctrinal Statement
 					</h1>
 					{/* Download Button */}
-					<div className=" absolute top-24 left-4">
+					<div className=" mt-10 hidden xl:block absolute top-16 left-12">
 						<a
 							href="/statements/Statement-of-Faith.pdf"
 							download
-							className="px-4 py-2 bg-navy text-white rounded-lg hover:bg-yellow hover:text-black"
+							className=" p-2 bg-navy text-white rounded-lg hover:bg-yellow hover:text-black"
 						>
 							Download Statement of Faith (PDF)
 						</a>
 					</div>
 					<div className="space-y-8">
 						<div>
-							<h2 className="text-h2 font-semibold text-navy dark:text-white mb-4 text-center">
+							<h2 className="text-h3 lg:text-h2 font-semibold text-navy dark:text-white mb-4 text-center">
 								I. The Holy Scriptures
 							</h2>
 
@@ -121,9 +121,9 @@ const page = () => {
 					</div>
 				</div>
 			</section>
-			<section className="py-10 bg-background">
-				<div className="max-w-screen-lg mx-auto px-4">
-					<h1 className="text-h2 font-bold text-navy dark:text-white mb-6 text-center">
+			<section className="py-10 bg-background px-6">
+				<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg mx-auto ">
+					<h1 className="text-h3 lg:text-h2 font-bold text-navy dark:text-white mb-6 text-center">
 						II. God
 					</h1>
 
@@ -717,9 +717,9 @@ const page = () => {
 					</div>
 				</div>
 			</section>
-			<section className="py-10 bg-background">
-				<div className="max-w-screen-lg mx-auto px-4">
-					<h2 className="text-h2 font-semibold text-navy dark:text-white mb-6 text-center">
+			<section className="py-10 bg-background px-6">
+				<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg mx-auto ">
+					<h2 className="text-h3 lg:text-h2 font-semibold text-navy dark:text-white mb-6 text-center">
 						III. Man
 					</h2>
 
@@ -798,9 +798,9 @@ const page = () => {
 					</div>
 				</div>
 			</section>
-			<section className="py-10 bg-background">
-				<div className="max-w-screen-lg mx-auto px-4">
-					<h2 className="text-h2 font-semibold text-navy dark:text-white mb-6 text-center">
+			<section className="py-10 bg-background px-6">
+				<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg mx-auto ">
+					<h2 className="text-h3 lg:text-h2 font-semibold text-navy dark:text-white mb-6 text-center">
 						IV. Salvation
 					</h2>
 
@@ -1081,9 +1081,9 @@ const page = () => {
 					</div>
 				</div>
 			</section>
-			<section className="py-10 bg-background">
-				<div className="max-w-screen-lg mx-auto px-4">
-					<h2 className="text-h2 font-semibold text-navy dark:text-white mb-6 text-center">
+			<section className="py-10 bg-background px-6">
+				<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg mx-auto ">
+					<h2 className="text-h3 lg:text-h2 font-semibold text-navy dark:text-white mb-6 text-center">
 						V. The Church
 					</h2>
 
@@ -1381,9 +1381,9 @@ const page = () => {
 				</div>
 			</section>
 
-			<section className="py-10 bg-background">
-				<div className="max-w-screen-lg mx-auto px-4">
-					<h2 className="text-h2 font-semibold text-navy dark:text-white mb-6 text-center">
+			<section className="py-10 bg-background px-6">
+				<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg mx-auto ">
+					<h2 className="text-h3 lg:text-h2 font-semibold text-navy dark:text-white mb-6 text-center">
 						VI. The Spiritual Realm
 					</h2>
 
@@ -1489,7 +1489,7 @@ const page = () => {
 						</div>
 					</div>
 
-					<h2 className="text-h2 font-semibold text-navy dark:text-white mb-6 text-center pt-10">
+					<h2 className="text-h3 lg:text-h2 font-semibold text-navy dark:text-white mb-6 text-center pt-10">
 						VII. Future Things in Scripture
 					</h2>
 
@@ -1685,6 +1685,16 @@ const page = () => {
 							</p>
 						</div>
 					</div>
+				</div>
+				{/* Download Button */}
+				<div className=" mt-10 xl:hidden">
+					<a
+						href="/statements/Statement-of-Faith.pdf"
+						download
+						className=" p-2 bg-navy text-white rounded-lg hover:bg-yellow hover:text-black"
+					>
+						Download Statement of Faith (PDF)
+					</a>
 				</div>
 			</section>
 		</div>

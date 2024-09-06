@@ -3,8 +3,8 @@ import React from "react";
 const page = () => {
 	return (
 		<div>
-			<section className=" mt-28 max-w-screen-lg mx-auto">
-				<h1 className=" text-h1 text-navy font-bold text-start mb-2">
+			<section className=" h-screen lg:h-full mt-28 md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg mx-auto p-6 md:p-0">
+				<h1 className=" text-h3 md:text-h2 lg:text-h1 text-navy font-bold text-start mb-2">
 					<span className=" text-grei-light">28 July</span> Matthew 13: 45-52
 				</h1>
 				<div>
@@ -15,11 +15,11 @@ const page = () => {
 						frameBorder="0"
 						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 						allowFullScreen
-						className="w-full h-[250px] md:h-[600px]"
+						className="w-full h-[250px] md:h-[370px] lg:h-[450px] xl:h-[600px]"
 					></iframe>
 				</div>
 				<div>
-					<p className=" text-navy md:text-h4 font-medium mb-10">
+					<p className="text-lg lg:text-h4 text-navy text-[14px] md:text-h4 font-medium mb-10 md:mt-6 mt-6 ">
 						“A small degree of knowledge is not sufficient for a preacher of the
 						Gospel. The sacred writings should be his treasure, and he should
 						properly understand them… his knowledge consists in being well

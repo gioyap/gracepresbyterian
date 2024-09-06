@@ -12,7 +12,27 @@ const defaultUrl = process.env.VERCEL_URL
 export const metadata = {
 	metadataBase: new URL(defaultUrl),
 	title: "Grace Presbyterian",
-	description: "Go and make disciple",
+	description: "Go and make disciples",
+	openGraph: {
+		title: "Grace Presbyterian Church",
+		description: "Join us in our mission to spread the Word of God.",
+		url: defaultUrl,
+		type: "website",
+		images: [
+			{
+				url: `${defaultUrl}/images/temple.jpg`, // Path to your Open Graph image
+				width: 1200,
+				height: 630,
+				alt: "Grace Presbyterian Church",
+			},
+		],
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Grace Presbyterian Church",
+		description: "Join us in our mission to spread the Word of God.",
+		images: [`${defaultUrl}/images/temple.jpg`],
+	},
 };
 
 export default function RootLayout({
@@ -24,7 +44,7 @@ export default function RootLayout({
 		<html lang="en" className={GeistSans.className} suppressHydrationWarning>
 			<head>
 				<link
-					href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap"
+					href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
 					rel="stylesheet"
 				/>
 			</head>
@@ -35,7 +55,7 @@ export default function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					<main className="min-h-screen flex flex-col items-center p-0 font-playfair">
+					<main className="min-h-screen flex flex-col items-center p-0 font-roboto">
 						<div className="flex-1 w-full flex flex-col items-center p-0">
 							{/* Header */}
 							<nav className="absolute top-0 w-full flex justify-between items-center p-3 px-5 h-16 z-20">
@@ -45,7 +65,7 @@ export default function RootLayout({
 							</nav>
 							{/* Main Body */}
 							<div className="flex w-full flex-col p-0">{children}</div>
-							<footer className="w-full flex items-center justify-center border-t mx-auto text-center text-[8px] md:text-[12px] gap-8 py-2 md:py-5 p-0 ">
+							<footer className="w-full flex items-center justify-center border-t mx-auto text-center text-[8px] md:text-[12px] gap-x-6 md:gap-x-10 py-2 whitespace-nowrap ">
 								<p>
 									<a
 										href="https://www.facebook.com/presbyterian.church.984"

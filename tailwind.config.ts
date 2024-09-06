@@ -19,7 +19,7 @@ const config = {
 		},
 		extend: {
 			fontFamily: {
-				playfair: ['"Playfair Display"', "serif"],
+				roboto: ['"Roboto"', "serif"],
 			},
 			colors: {
 				navy: {

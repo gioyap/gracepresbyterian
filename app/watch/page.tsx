@@ -120,11 +120,11 @@ const Page = () => {
 					<h1>Watch</h1>
 				</div>
 			</section>
-			<section className="p-6 bg-black">
+			<section className="p-6 md:p-0 md:py-2 bg-black">
 				<h1 className=" text-h2 md:text-h1 text-white font-bold text-center mb-2">
 					Cristology
 				</h1>
-				<div className="max-w-screen-2xl mx-auto mb-8">
+				<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg 2xl:max-w-screen-2xl mx-auto mb-8">
 					<iframe
 						width="100%"
 						src="https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2Fpresbyterian.church.984%2Fvideos%2F1116432625917264%2F&show_text=false&width=560&t=0"
@@ -132,7 +132,7 @@ const Page = () => {
 						frameBorder="0"
 						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 						allowFullScreen
-						className="w-full h-[200px] md:h-[400px] lg:h-[580px] xl:h-[740px] 2xl:h-[800px]"
+						className="w-full h-[200px] md:h-[400px] lg:h-[480px] xl:h-[640px] 2xl:h-[800px]"
 					></iframe>
 				</div>
 			</section>

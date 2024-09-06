@@ -22,12 +22,14 @@ const Page = () => {
 				<div className="absolute inset-0 bg-black opacity-30"></div>
 				<div className="text-center relative">
 					{/* Title */}
-					<div className="text-white text-title font-bold mb-5">Locations</div>
+					<div className="text-white text-h1 lg:text-title font-bold mb-5">
+						Locations
+					</div>
 
 					{/* Dropdown */}
 					<div className="relative inline-block">
 						<button
-							className="bg-yellow text-navy dark:text-white py-2 px-4 rounded-xl font-semibold"
+							className="bg-yellow text-navy dark:text-white py-2 px-4 rounded-xl font-semibold text-sm md:text-h4"
 							onClick={toggleDropdown}
 						>
 							Select a Location
