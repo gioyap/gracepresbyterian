@@ -8,7 +8,7 @@ const Page = () => {
 		<div>
 			{/* Hero Section */}
 			<section
-				className="relative w-screen h-[700px] overflow-hidden flex items-center justify-end"
+				className="relative w-screen h-screen lg:h-[700px] overflow-hidden flex items-center justify-end"
 				style={{
 					backgroundImage: "url('/images/contact.jpg')",
 					backgroundSize: "cover",
@@ -16,7 +16,7 @@ const Page = () => {
 					backgroundRepeat: "no-repeat",
 				}}
 			>
-				<div className="text-white text-h1 lg:text-title font-bold whitespace-nowrap mr-20">
+				<div className="text-navy md:text-white text-h1 lg:text-title font-bold whitespace-nowrap mr-20">
 					<h1>Contact Us</h1>
 				</div>
 			</section>

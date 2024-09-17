@@ -21,19 +21,19 @@ export const Header = () => {
 			setIsMobile(window.innerWidth <= 1024); // Adjust breakpoint for tablet and mobile at 1024px
 		};
 
-		// Close the dropdown when clicking outside of it
-		const handleClickOutside = (event: MouseEvent) => {
-			if (
-				dropdownRef.current &&
-				!dropdownRef.current.contains(event.target as Node)
-			) {
-				setDropdownOpen(false);
-			}
-		};
+		// // Close the dropdown when clicking outside of it
+		// const handleClickOutside = (event: MouseEvent) => {
+		// 	if (
+		// 		dropdownRef.current &&
+		// 		!dropdownRef.current.contains(event.target as Node)
+		// 	) {
+		// 		setDropdownOpen(false);
+		// 	}
+		// };
 
 		window.addEventListener("scroll", handleScroll);
 		window.addEventListener("resize", handleResize);
-		document.addEventListener("mousedown", handleClickOutside); // Listen for outside clicks
+		// document.addEventListener("mousedown", handleClickOutside); // Listen for outside clicks
 
 		// Initial check for screen size
 		handleResize();
@@ -41,7 +41,7 @@ export const Header = () => {
 		return () => {
 			window.removeEventListener("scroll", handleScroll);
 			window.removeEventListener("resize", handleResize);
-			document.removeEventListener("mousedown", handleClickOutside);
+			// document.removeEventListener("mousedown", handleClickOutside);
 		};
 	}, []);
 

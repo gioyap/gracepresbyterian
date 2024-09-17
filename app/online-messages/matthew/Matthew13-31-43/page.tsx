@@ -5,7 +5,7 @@ const page = () => {
 		<div>
 			<section className="h-screen lg:h-full mt-28 md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg mx-auto p-6 md:p-0">
 				<h1 className=" text-h3 md:text-h2 lg:text-h1 text-navy font-bold text-start mb-2">
-					<span className=" text-grei-light">16 July</span> Matthew 13: 31-44
+					<span className=" text-grei-light">16 July 24</span> Matthew 13: 31-44
 				</h1>
 				<div>
 					<iframe
