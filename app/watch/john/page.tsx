@@ -8,7 +8,8 @@ const fetchThumbnails = async () => {
 
 	const { data: john, error } = await supabase
 		.from("john") // Adjust the table name as necessary
-		.select("*");
+		.select("*")
+		.order("created_at", { ascending: false });
 
 	if (error) {
 		console.error(error);
@@ -42,9 +43,9 @@ const Page = async () => {
 				<div className="absolute inset-0 bg-black opacity-30"></div>
 				<h1 className=" text-red-600 font-bold text-title">Messages</h1>
 			</section>
-			<section className="my-16">
-				<div className="max-w-screen-2xl mx-auto text-center text-navy">
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+			<section className="my-12">
+				<div className="lg:max-w-screen-md xl:max-w-screen-lg 3xl:max-w-screen-2xl mx-auto text-center text-navy p-6">
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 3xl:grid-cols-4 gap-y-12 md:gap-6">
 						{thumbnailsData.map((thumbnail: any, index: any) => (
 							<Thumbnail
 								key={index}

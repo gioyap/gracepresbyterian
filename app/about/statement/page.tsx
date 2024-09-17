@@ -1,113 +1,282 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
+
+const verses = [
+	"Matthew 24:35",
+	"John 10:35",
+	"John 16:12-13",
+	"John 17:17",
+	"1 Corinthians 2:13",
+	"2 Timothy 3:15-17",
+	"Hebrews 4:12",
+];
 
 const page = () => {
+	const [visibleVerse, setVisibleVerse] = useState<string | null>(null);
+	const [verseData, setVerseData] = useState<{ [key: string]: string }>({});
+
+	// Function to fetch Bible verse from the API
+	const fetchBibleVerse = async (verse: string) => {
+		try {
+			const response = await fetch(`https://bible-api.com/${verse}`);
+			const data = await response.json();
+			const text = data.verses.map((v: any) => v.text).join(" ");
+			setVerseData((prev) => ({ ...prev, [verse]: text }));
+		} catch (error) {
+			console.error("Error fetching verse:", error);
+		}
+	};
+
+	const toggleVerse = (verse: string) => {
+		if (visibleVerse === verse) {
+			setVisibleVerse(null); // Hide if already visible
+		} else {
+			fetchBibleVerse(verse); // Fetch and show the verse
+			setVisibleVerse(verse);
+		}
+	};
+
 	return (
-		<div>
+		<div className="relative">
 			<section className="pt-20 pb-10 bg-background px-6">
-				<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg mx-auto ">
-					<h1 className="text-h2 lg:text-h1 font-bold text-navy dark:text-white mb-6 text-center">
+				<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg mx-auto 3xl:max-w-screen-2xl">
+					<h1 className="text-h2 lg:text-h1 3xl:text-title font-bold text-navy dark:text-white mb-6 text-center">
 						Grace Presbyterian Doctrinal Statement
 					</h1>
 					{/* Download Button */}
-					<div className=" mt-10 hidden xl:block absolute top-16 left-12">
+					<div className="mt-10 hidden xl:block absolute top-16 left-12 3xl:left-6">
 						<a
 							href="/statements/Statement-of-Faith.pdf"
 							download
-							className=" p-2 bg-navy text-white rounded-lg hover:bg-yellow hover:text-black"
+							className="p-2 bg-navy text-white rounded-lg hover:bg-yellow hover:text-black"
 						>
 							Download Statement of Faith (PDF)
 						</a>
 					</div>
 					<div className="space-y-8">
 						<div>
-							<h2 className="text-h3 lg:text-h2 font-semibold text-navy dark:text-white mb-4 text-center">
+							<h2 className="text-h3 lg:text-h2 3xl:text-h1 font-semibold text-navy dark:text-white mb-6 text-center">
 								I. The Holy Scriptures
 							</h2>
 
 							<div className="space-y-4">
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										1. Inspiration and Authority
 									</h3>
-									<p>
+									<div className="xl:text-lg 3xl:text-h4">
 										We teach that the Bible is God’s written revelation to man,
 										and thus the sixty-six books of the Bible given to us by the
 										Holy Spirit constitute the plenary{" "}
-										<strong className=" text-red-600">
+										<strong className="text-red-600">
 											(inspired equally in all parts)
 										</strong>{" "}
 										Word of God{" "}
-										<strong className=" text-red-600">
-											(1 Corinthians 2:7-14; 2 Peter 1:20-21)
-										</strong>
-										that is an objective, propositional revelation{" "}
-										<strong className=" text-red-600">
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("1 Thessalonians 2:13")}
+										>
 											(1 Thessalonians 2:13)
+											{visibleVerse === "1 Thessalonians 2:13" &&
+												verseData["1 Thessalonians 2:13"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["1 Thessalonians 2:13"]}
+														</p>
+													</div>
+												)}
 										</strong>{" "}
-										verbally inspired in every word{" "}
-										<strong className=" text-red-600">(2 Timothy 3:16)</strong>,
-										absolutely inerrant in the original documents, infallible
-										and God-breathed, the only infallible rule of faith and
-										practice{" "}
-										<strong className=" text-red-600">
-											(Matthew 5:18; 24:35; John 10:35; 16:12-13; 17:17; 1
-											Corinthians 2:13; 2 Timothy 3:15-17; Hebrews 4:12; 2 Peter
-											1:20-21)
+										verbally inspired in every word
+										<br />
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("2 Timothy 3:16")}
+										>
+											(2 Timothy 3:16)
+											{visibleVerse === "2 Timothy 3:16" &&
+												verseData["2 Timothy 3:16"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["2 Timothy 3:16"]}
+														</p>
+													</div>
+												)}
 										</strong>
-										.
-									</p>
+										, absolutely inerrant in the original documents, infallible
+										and God-breathed, the only infallible rule of faith and
+										practice.
+										<span className="flex flex-wrap gap-2 mt-2">
+											{verses.map((verse) => (
+												<p key={verse} className="relative">
+													<strong
+														className="text-red-600 cursor-pointer"
+														onClick={() => toggleVerse(verse)}
+													>
+														{`(${verse})`}
+														{visibleVerse === verse && verseData[verse] && (
+															<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10 text-navy dark:text-white">
+																<p className="text-sm xl:text-[16px] 3xl:text-lg">
+																	{verseData[verse]}
+																</p>
+															</div>
+														)}
+													</strong>
+												</p>
+											))}
+										</span>
+									</div>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										2. Interpretation
 									</h3>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4">
 										We teach the literal, grammatical, historical interpretation
 										of Scripture, which affirms the belief that the opening
 										chapters of Genesis present creation in six literal 24-hour
 										days{" "}
-										<strong className=" text-red-600">
-											(Genesis 1:31; Exodus 31:17)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Genesis 1:31")}
+										>
+											(Genesis 1:31)
+											{visibleVerse === "Genesis 1:31" &&
+												verseData["Genesis 1:31"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className=" text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Genesis 1:31"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Exodus 31:17")}
+										>
+											(Exodus 31:17)
+											{visibleVerse === "Exodus 31:17" &&
+												verseData["Exodus 31:17"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className=" text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Exodus 31:17"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										3. Dual Authorship
 									</h3>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4">
 										We teach God spoke in His written Word by a process of dual
 										authorship. The Holy Spirit so superintended the human
 										authors that, through their individual personalities and
 										different styles of writing, as sunlight through stained
-										glass windows, they composed and recorded God’s Word to man
-										<strong className=" text-red-600">
+										glass windows, they composed and recorded God’s Word to man{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("2 Peter 1:20-21")}
+										>
 											(2 Peter 1:20-21)
+											{visibleVerse === "2 Peter 1:20-21" &&
+												verseData["2 Peter 1:20-21"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className=" text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["2 Peter 1:20-21"]}
+														</p>
+													</div>
+												)}
 										</strong>{" "}
-										without error in the whole or in the part
-										<strong className=" text-red-600">
-											(Matthew 5:18; 2 Timothy 3:16)
-										</strong>
+										without error in the whole or in the part{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Matthew 5:18")}
+										>
+											(Matthew 5:18)
+											{visibleVerse === "Matthew 5:18" &&
+												verseData["Matthew 5:18"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className=" text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Matthew 5:18"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
 										.
 									</p>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										4. True Interpretation
 									</h3>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4">
 										We teach that whereas there may be several applications of
 										any given passage of Scripture, there is but one true
 										interpretation. The meaning of Scripture is to be found as
 										one diligently applies the literal grammatical-historical
 										method of interpretation under the enlightenment of the Holy
 										Spirit{" "}
-										<strong className=" text-red-600">
-											(John 7:17; 16:12-15; 1 Corinthians 2:7-15; 1 John 2:20)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("John 7:17")}
+										>
+											(John 7:17)
+											{visibleVerse === "John 7:17" &&
+												verseData["John 7:17"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className=" text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["John 7:17"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("John 16:12-15")}
+										>
+											(John 16:12-15)
+											{visibleVerse === "John 16:12-15" &&
+												verseData["John 16:12-15"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className=" text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["John 16:12-15"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("1 Corinthians 2:7-15")}
+										>
+											(1 Corinthians 2:7-15)
+											{visibleVerse === "1 Corinthians 2:7-15" &&
+												verseData["1 Corinthians 2:7-15"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className=" text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["1 Corinthians 2:7-15"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("1 John 2:20")}
+										>
+											(1 John 2:20)
+											{visibleVerse === "1 John 2:20" &&
+												verseData["1 John 2:20"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className=" text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["1 John 2:20"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										. It is the responsibility of believers as they grow in
 										maturity, to ascertain carefully the true intent and meaning
@@ -122,116 +291,398 @@ const page = () => {
 				</div>
 			</section>
 			<section className="py-10 bg-background px-6">
-				<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg mx-auto ">
-					<h1 className="text-h3 lg:text-h2 font-bold text-navy dark:text-white mb-6 text-center">
+				<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg mx-auto 3xl:max-w-screen-2xl">
+					<h1 className="text-h3 lg:text-h2 3xl:text-h1 font-bold text-navy dark:text-white mb-6 text-center">
 						II. God
 					</h1>
 
 					<div className="space-y-8">
 						<div>
-							<p>
+							<p className="xl:text-lg 3xl:text-h4">
 								We teach that there is but one living and true God{" "}
-								<strong className=" text-red-600">
-									(Deuteronomy 6:4; Isaiah 45:5-7; 1 Corinthians 8:4)
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Deuteronomy 6:4")}
+								>
+									(Deuteronomy 6:4)
+									{visibleVerse === "Deuteronomy 6:4" &&
+										verseData["Deuteronomy 6:4"] && (
+											<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Deuteronomy 6:4"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Isaiah 45:5-7")}
+								>
+									(Isaiah 45:5-7)
+									{visibleVerse === "Isaiah 45:5-7" &&
+										verseData["Isaiah 45:5-7"] && (
+											<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Isaiah 45:5-7"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("1 Corinthians 8:4")}
+								>
+									(1 Corinthians 8:4)
+									{visibleVerse === "1 Corinthians 8:4" &&
+										verseData["1 Corinthians 8:4"] && (
+											<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["1 Corinthians 8:4"]}
+												</p>
+											</div>
+										)}
 								</strong>
 								, an infinite, all-knowing Spirit{" "}
-								<strong className=" text-red-600">(John 4:24)</strong>, perfect
-								in all His attributes, one in essence, eternally existing in
-								three Persons – Father, Son, and Holy Spirit{" "}
-								<strong className=" text-red-600">
-									(Matthew 28:19; 2 Corinthians 13:14)
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("John 4:24")}
+								>
+									(John 4:24)
+									{visibleVerse === "John 4:24" && verseData["John 4:24"] && (
+										<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+											<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+												{verseData["John 4:24"]}
+											</p>
+										</div>
+									)}
+								</strong>{" "}
+								, perfect in all His attributes, one in essence, eternally
+								existing in three Persons – Father, Son, and Holy Spirit{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Matthew 28:19")}
+								>
+									(Matthew 28:19)
+									{visibleVerse === "Matthew 28:19" &&
+										verseData["Matthew 28:19"] && (
+											<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Matthew 28:19"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("2 Corinthians 13:14")}
+								>
+									(2 Corinthians 13:14)
+									{visibleVerse === "2 Corinthians 13:14" &&
+										verseData["2 Corinthians 13:14"] && (
+											<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["2 Corinthians 13:14"]}
+												</p>
+											</div>
+										)}
 								</strong>
 								, each equally deserving worship and obedience.
 							</p>
 						</div>
 
 						<div>
-							<h2 className="text-xl font-semibold text-navy dark:text-white mb-4">
+							<h2 className="text-xl xl:text-h3 font-semibold text-navy dark:text-white mb-6 ">
 								A. God the Father
 							</h2>
 
 							<div className="space-y-4">
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										1. Sovereignty and Creation
 									</h3>
-									<p>
+									<p className=" xl:text-lg 3xl:text-h4">
 										We teach that God the Father, the first person of the
 										Trinity, orders and disposes all things according to His own
 										purpose and grace{" "}
-										<strong className=" text-red-600">
-											(Psalm 145:8,9; 1 Corinthians 8:6)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Psalm 145:8-9")}
+										>
+											(Psalm 145:8-9)
+											{visibleVerse === "Psalm 145:8-9" &&
+												verseData["Psalm 145:8-9"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Psalm 145:8-9"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("1 Corinthians 8:6")}
+										>
+											(1 Corinthians 8:6)
+											{visibleVerse === "1 Corinthians 8:6" &&
+												verseData["1 Corinthians 8:6"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["1 Corinthians 8:6"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										2. Creator
 									</h3>
-									<p>
+									<p className=" xl:text-lg 3xl:text-h4">
 										He is the creator of all things{" "}
-										<strong className=" text-red-600">
-											(Genesis 1:1-31; Ephesians 3:9)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Genesis 1:1-31")}
+										>
+											(Genesis 1:1-31)
+											{visibleVerse === "Genesis 1:1-31" &&
+												verseData["Genesis 1:1-31"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Genesis 1:1-31"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse(" Ephesians 3:9")}
+										>
+											( Ephesians 3:9)
+											{visibleVerse === " Ephesians 3:9" &&
+												verseData[" Ephesians 3:9"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData[" Ephesians 3:9"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										3. Absolute Ruler
 									</h3>
-									<p>
+									<p className=" xl:text-lg 3xl:text-h4">
 										He is the only absolute and omnipotent ruler in the
 										universe; He is sovereign in creation, providence, and
-										redemption{" "}
-										<strong className=" text-red-600">
-											(Psalm 103:19; Romans 11:36)
+										redemption <br />
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Psalm 103:19")}
+										>
+											(Psalm 103:19)
+											{visibleVerse === "Psalm 103:19" &&
+												verseData["Psalm 103:19"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className=" text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Psalm 103:19"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Romans 11:36")}
+										>
+											(Romans 11:36)
+											{visibleVerse === "Romans 11:36" &&
+												verseData["Romans 11:36"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className=" text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Romans 11:36"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										4. Fatherhood
 									</h3>
-									<p>
+									<p className=" xl:text-lg 3xl:text-h4">
 										His fatherhood involves both His designation within the
 										Trinity and His relationship with mankind as Creator. He is
 										Father to all men{" "}
-										<strong className=" text-red-600">(Ephesians 4:6)</strong>,
-										but He is spiritual Father only to believers{" "}
-										<strong className=" text-red-600">
-											(Romans 8:14; 2 Corinthians 6:18)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Ephesians 4:6")}
+										>
+											(Ephesians 4:6)
+											{visibleVerse === "Ephesians 4:6" &&
+												verseData["Ephesians 4:6"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Ephesians 4:6"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										, but He is spiritual Father only to believers{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Romans 8:14")}
+										>
+											(Romans 8:14)
+											{visibleVerse === "Romans 8:14" &&
+												verseData["Romans 8:14"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Romans 8:14"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("2 Corinthians 6:18")}
+										>
+											(2 Corinthians 6:18)
+											{visibleVerse === "2 Corinthians 6:18" &&
+												verseData["2 Corinthians 6:18"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["2 Corinthians 6:18"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										5. Decree and Governance
 									</h3>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4">
 										He has decreed for His own glory all things that come to
 										pass{" "}
-										<strong className=" text-red-600">(Ephesians 1:11)</strong>.
-										He continually upholds, directs, and governs all creatures
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Ephesians 1:11")}
+										>
+											(Ephesians 1:11)
+											{visibleVerse === "Ephesians 1:11" &&
+												verseData["Ephesians 1:11"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Ephesians 1:11"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										. He continually upholds, directs, and governs all creatures
 										and events{" "}
-										<strong className=" text-red-600">
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("1 Chronicles 29:11")}
+										>
 											(1 Chronicles 29:11)
+											{visibleVerse === "1 Chronicles 29:11" &&
+												verseData["1 Chronicles 29:11"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["1 Chronicles 29:11"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										. He has graciously chosen from eternity past those whom He
 										would have as His own{" "}
-										<strong className=" text-red-600">(Ephesians 1:4-6)</strong>
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Ephesians 1:4-6")}
+										>
+											(Ephesians 1:4-6)
+											{visibleVerse === "Ephesians 1:4-6" &&
+												verseData["Ephesians 1:4-6"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Ephesians 1:4-6"]}
+														</p>
+													</div>
+												)}
+										</strong>
 										. He saves from sin all who come to Him through Jesus
 										Christ; He adopts as His own all those who come to Him; and
 										He becomes, upon adoption, Father to His own{" "}
-										<strong className=" text-red-600">
-											(John 1:12; Romans 8:15; Galatians 4:5; Hebrews 12:5-9)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("John 1:12")}
+										>
+											(John 1:12)
+											{visibleVerse === "John 1:12" &&
+												verseData["John 1:12"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["John 1:12"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Romans 8:15")}
+										>
+											(Romans 8:15)
+											{visibleVerse === "Romans 8:15" &&
+												verseData["Romans 8:15"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Romans 8:15"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Galatians 4:5")}
+										>
+											(Galatians 4:5)
+											{visibleVerse === "Galatians 4:5" &&
+												verseData["Galatians 4:5"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Galatians 4:5"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Hebrews 12:5-9")}
+										>
+											(Hebrews 12:5-9)
+											{visibleVerse === "Hebrews 12:5-9" &&
+												verseData["Hebrews 12:5-9"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Hebrews 12:5-9"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
@@ -240,46 +691,112 @@ const page = () => {
 						</div>
 
 						<div>
-							<h2 className="text-xl font-semibold text-navy dark:text-white mb-4">
+							<h2 className="text-xl xl:text-h3 font-semibold text-navy dark:text-white mb-6">
 								B. God the Son Incarnate
 							</h2>
 
 							<div className="space-y-4">
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										1. Divine Excellencies
 									</h3>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4">
 										Jesus Christ, the second Person of the Trinity, possesses
 										all the divine excellencies, and in these He is coequal,
 										consubstantial, and coeternal with the Father{" "}
-										<strong className=" text-red-600">
-											(John 10:30; 14:9)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("John 10:30")}
+										>
+											(John 10:30)
+											{visibleVerse === "John 10:30" &&
+												verseData["John 10:30"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["John 10:30"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("John 14:9")}
+										>
+											(John 14:9)
+											{visibleVerse === "John 14:9" &&
+												verseData["John 14:9"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["John 14:9"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										2. Creation through the Son
 									</h3>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4">
 										We teach that God the Father created all things according to
 										His own will, through His Son, Jesus Christ, and in Him all
 										things hold together{" "}
-										<strong className=" text-red-600">
-											(John 1:3; Colossians 1:15-17; Hebrews 1:2)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("John 1:3")}
+										>
+											(John 1:3)
+											{visibleVerse === "John 1:3" && verseData["John 1:3"] && (
+												<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+													<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+														{verseData["John 1:3"]}
+													</p>
+												</div>
+											)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Colossians 1:15-17")}
+										>
+											(Colossians 1:15-17)
+											{visibleVerse === "Colossians 1:15-17" &&
+												verseData["Colossians 1:15-17"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Colossians 1:15-17"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Hebrews 1:2")}
+										>
+											(Hebrews 1:2)
+											{visibleVerse === "Hebrews 1:2" &&
+												verseData["Hebrews 1:2"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Hebrews 1:2"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										3. The Incarnation
 									</h3>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4">
 										We teach that in the incarnation{" "}
 										<strong className=" text-red-600">
 											(God becoming man)
@@ -288,70 +805,272 @@ const page = () => {
 										nothing of the divine essence, either in degree or kind. In
 										His incarnation, Christ’s divine nature united with a human
 										nature in an indissoluble union, and so He became the
-										God-man{" "}
-										<strong className=" text-red-600">
-											(Philippians 2:5-8; Colossians 2:9)
+										God-man ;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Colossians 2:9")}
+										>
+											(Colossians 2:9)
+											{visibleVerse === "Colossians 2:9" &&
+												verseData["Colossians 2:9"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Colossians 2:9"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										4. Unity of Humanity and Deity
 									</h3>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4">
 										We teach that Jesus Christ represents humanity and deity in
 										indivisible oneness{" "}
-										<strong className=" text-red-600">
-											(Micah 5:2; John 14:9-10; Colossians 2:9; John 5:23)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Micah 5:2")}
+										>
+											(Micah 5:2)
+											{visibleVerse === "Micah 5:2" &&
+												verseData["Micah 5:2"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Micah 5:2"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("John 14:9-10")}
+										>
+											(John 14:9-10)
+											{visibleVerse === "John 14:9-10" &&
+												verseData["John 14:9-10"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["John 14:9-10"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("John 5:23")}
+										>
+											(John 5:23)
+											{visibleVerse === "John 5:23" &&
+												verseData["John 5:23"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["John 5:23"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										5. Virgin Birth
 									</h3>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4">
 										We teach that our Lord Jesus Christ was virgin born{" "}
-										<strong className=" text-red-600">
-											(Isaiah 7:14; Matthew 1:23, 25; Luke 1:26-35)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Isaiah 7:14")}
+										>
+											(Isaiah 7:14)
+											{visibleVerse === "Isaiah 7:14" &&
+												verseData["Isaiah 7:14"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Isaiah 7:14"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Matthew 1:23, 25")}
+										>
+											(Matthew 1:23, 25)
+											{visibleVerse === "Matthew 1:23, 25" &&
+												verseData["Matthew 1:23, 25"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Matthew 1:23, 25"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Luke 1:26-35")}
+										>
+											(Luke 1:26-35)
+											{visibleVerse === "Luke 1:26-35" &&
+												verseData["Luke 1:26-35"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Luke 1:26-35"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										6. Purpose of the Incarnation
 									</h3>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4">
 										We teach that He was God incarnate{" "}
-										<strong className=" text-red-600">(John 1:1,14)</strong>;
-										and the purpose of the incarnation was to reveal God, redeem
-										men, and rule over God’s kingdom{" "}
-										<strong className=" text-red-600">
-											(Psalm 2:7-9; Isaiah 9:6; John 1:29; Philippians 2:9-11;
-											Hebrews 7:25-26; 1 Peter 1:18-19)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("John 1:1,14")}
+										>
+											(John 1:1,14)
+											{visibleVerse === "John 1:1,14" &&
+												verseData["John 1:1,14"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["John 1:1,14"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										; and the purpose of the incarnation was to reveal God,
+										redeem men, and rule over God’s kingdom{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Psalm 2:7-9")}
+										>
+											(Psalm 2:7-9)
+											{visibleVerse === "Psalm 2:7-9" &&
+												verseData["Psalm 2:7-9"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Psalm 2:7-9"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Isaiah 9:6")}
+										>
+											(Isaiah 9:6)
+											{visibleVerse === "Isaiah 9:6" &&
+												verseData["Isaiah 9:6"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Isaiah 9:6"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("John 1:29")}
+										>
+											(John 1:29)
+											{visibleVerse === "John 1:29" &&
+												verseData["John 1:29"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["John 1:29"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Philippians 2:9-11")}
+										>
+											(Philippians 2:9-11)
+											{visibleVerse === "Philippians 2:9-11" &&
+												verseData["Philippians 2:9-11"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Philippians 2:9-11"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Hebrews 7:25-26")}
+										>
+											(Hebrews 7:25-26)
+											{visibleVerse === "Hebrews 7:25-26" &&
+												verseData["Hebrews 7:25-26"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Hebrews 7:25-26"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("1 Peter 1:18-19")}
+										>
+											(1 Peter 1:18-19)
+											{visibleVerse === "1 Peter 1:18-19" &&
+												verseData["1 Peter 1:18-19"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["1 Peter 1:18-19"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										7. Humility and Service
 									</h3>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4">
 										We teach that in the incarnation, the second person of the
 										Trinity laid aside His right to the full prerogatives of
 										coexistence with God, assumed the place of a Son, and took
 										on an existence appropriate to a servant while never
 										divesting Himself of His divine attributes{" "}
-										<strong className=" text-red-600">
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Philippians 2:5-8")}
+										>
 											(Philippians 2:5-8)
+											{visibleVerse === "Philippians 2:5-8" &&
+												verseData["Philippians 2:5-8"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Philippians 2:5-8"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
@@ -360,75 +1079,368 @@ const page = () => {
 						</div>
 
 						<div>
-							<h2 className="text-xl font-semibold text-navy dark:text-white mb-4">
+							<h2 className="text-xl xl:text-h3 font-semibold text-navy dark:text-white mb-6 ">
 								C. God the Son: Redeemer
 							</h2>
 
 							<div className="space-y-4">
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										1. Accomplished Redemption
 									</h3>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4">
 										We teach that our Lord Jesus Christ accomplished our
 										redemption through His death on the cross and that His death
 										was voluntary, vicarious, substitutionary, propitiatory, and
 										redemptive{" "}
-										<strong className=" text-red-600">
-											(John 10:15; Romans 3:24-25; 5:8; 1 Peter 2:24)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("John 10:15")}
+										>
+											(John 10:15)
+											{visibleVerse === "John 10:15" &&
+												verseData["John 10:15"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["John 10:15"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Romans 3:24-25")}
+										>
+											(Romans 3:24-25)
+											{visibleVerse === "Romans 3:24-25" &&
+												verseData["Romans 3:24-25"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Romans 3:24-25"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Romans 5:8")}
+										>
+											(Romans 5:8)
+											{visibleVerse === "Romans 5:8" &&
+												verseData["Romans 5:8"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Romans 5:8"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("1 Peter 2:24")}
+										>
+											(1 Peter 2:24)
+											{visibleVerse === "1 Peter 2:24" &&
+												verseData["1 Peter 2:24"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["1 Peter 2:24"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										2. Results of Redemption
 									</h3>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4">
 										We teach that on the basis of the efficacy of the death of
 										our Lord Jesus Christ, the believing sinner is freed from
 										the punishment, the penalty, the power, and one day the very
 										presence of sin; and that he is declared righteous, given
 										eternal life, and adopted into the family of God{" "}
-										<strong className=" text-red-600">
-											(Romans 3:25, 5:8-9; 2 Corinthians 5:14-15; 1 Peter 2:24;
-											3:18)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Romans 3:25")}
+										>
+											(Romans 3:25)
+											{visibleVerse === "Romans 3:25" &&
+												verseData["Romans 3:25"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Romans 3:25"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Romans 5:8-9")}
+										>
+											(Romans 5:8-9)
+											{visibleVerse === "Romans 5:8-9" &&
+												verseData["Romans 5:8-9"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Romans 5:8-9"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("2 Corinthians 5:14-15")}
+										>
+											(2 Corinthians 5:14-15)
+											{visibleVerse === "2 Corinthians 5:14-15" &&
+												verseData["2 Corinthians 5:14-15"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["2 Corinthians 5:14-15"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("1 Peter 3:18")}
+										>
+											(1 Peter 3:18)
+											{visibleVerse === "1 Peter 3:18" &&
+												verseData["1 Peter 3:18"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["1 Peter 3:18"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										3. Justification and Resurrection
 									</h3>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4">
 										We teach that our justification is made sure by His literal,
 										physical resurrection from the dead and that He is now
 										ascended to the right hand of the Father, where He now
 										mediates as our Advocate and High Priest{" "}
-										<strong className=" text-red-600">
-											(Matthew 28:6; Luke 24:38-39; Acts 2:30-31; Romans 4:25;
-											8:34; Hebrews 7:25; 9:24; 1 John 2:1)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Matthew 28:6")}
+										>
+											(Matthew 28:6)
+											{visibleVerse === "Matthew 28:6" &&
+												verseData["Matthew 28:6"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Matthew 28:6"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Luke 24:38-39")}
+										>
+											(Luke 24:38-39)
+											{visibleVerse === "Luke 24:38-39" &&
+												verseData["Luke 24:38-39"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Luke 24:38-39"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										; <br />
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Acts 2:30-31")}
+										>
+											(Acts 2:30-31)
+											{visibleVerse === "Acts 2:30-31" &&
+												verseData["Acts 2:30-31"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Acts 2:30-31"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Romans 4:25")}
+										>
+											(Romans 4:25)
+											{visibleVerse === "Romans 4:25" &&
+												verseData["Romans 4:25"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Romans 4:25"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Romans 8:34")}
+										>
+											(Romans 8:34)
+											{visibleVerse === "Romans 8:34" &&
+												verseData["Romans 8:34"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Romans 8:34"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Hebrews 7:25")}
+										>
+											(Hebrews 7:25)
+											{visibleVerse === "Hebrews 7:25" &&
+												verseData["Hebrews 7:25"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Hebrews 7:25"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Hebrews 9:24")}
+										>
+											(Hebrews 9:24)
+											{visibleVerse === "Hebrews 9:24" &&
+												verseData["Hebrews 9:24"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Hebrews 9:24"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("1 John 2:1")}
+										>
+											(1 John 2:1)
+											{visibleVerse === "1 John 2:1" &&
+												verseData["1 John 2:1"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["1 John 2:1"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										4. Proof and Guarantee
 									</h3>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4">
 										We teach that in the resurrection of Jesus Christ from the
 										grave, God confirmed the deity of His Son and gave proof
 										that God has accepted the atoning work of Christ on the
 										cross. And that Jesus’ bodily resurrection is also the
-										guarantee of a future resurrection life for all believers
-										<strong className=" text-red-600">
-											(John 5:26-29; 14:19; Romans 1:4; 4:25; 6:5-10; 1
-											Corinthians 15:20,23)
+										guarantee of a future resurrection life for all believers{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("John 5:26-29")}
+										>
+											(John 5:26-29)
+											{visibleVerse === "John 5:26-29" &&
+												verseData["John 5:26-29"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["John 5:26-29"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("John 14:19")}
+										>
+											(John 14:19)
+											{visibleVerse === "John 14:19" &&
+												verseData["John 14:19"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["John 14:19"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Romans 1:4")}
+										>
+											(Romans 1:4)
+											{visibleVerse === "Romans 1:4" &&
+												verseData["Romans 1:4"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Romans 1:4"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Romans 6:5-10")}
+										>
+											(Romans 6:5-10)
+											{visibleVerse === "Romans 6:5-10" &&
+												verseData["Romans 6:5-10"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Romans 6:5-10"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<br />
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("1 Corinthians 15:20,23")}
+										>
+											(1 Corinthians 15:20,23)
+											{visibleVerse === "1 Corinthians 15:20,23" &&
+												verseData["1 Corinthians 15:20,23"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["1 Corinthians 15:20,23"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
@@ -437,79 +1449,287 @@ const page = () => {
 						</div>
 
 						<div>
-							<h2 className="text-xl font-semibold text-navy dark:text-white mb-6">
+							<h2 className="text-xl xl:text-h3 font-semibold text-navy dark:text-white mb-6">
 								D. God the Son: Judge
 							</h2>
 
 							<div className="space-y-4">
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										1. Return and Millennial Kingdom
 									</h3>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4">
 										We teach that Jesus Christ will return to receive the
 										church, which is His body, unto Himself at the rapture and,
 										returning with His church in glory, will establish His
 										millennial kingdom on earth{" "}
-										<strong className=" text-red-600">
-											(Acts 1:9-11; 1 Thessalonians 4:13-18; Revelation 20)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Acts 1:9-11")}
+										>
+											(Acts 1:9-11)
+											{visibleVerse === "Acts 1:9-11" &&
+												verseData["Acts 1:9-11"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Acts 1:9-11"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("1 Thessalonians 4:13-18")}
+										>
+											(1 Thessalonians 4:13-18)
+											{visibleVerse === "1 Thessalonians 4:13-18" &&
+												verseData["1 Thessalonians 4:13-18"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["1 Thessalonians 4:13-18"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Revelation 20")}
+										>
+											(Revelation 20)
+											{visibleVerse === "Revelation 20" &&
+												verseData["Revelation 20"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Revelation 20"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										2. Judgment
 									</h3>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4">
 										We believe that the Lord Jesus Christ is the one through
 										whom God will judge all mankind{" "}
-										<strong className=" text-red-600">(John 5:22-23)</strong>:
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("John 5:22-23")}
+										>
+											(John 5:22-23)
+											{visibleVerse === "John 5:22-23" &&
+												verseData["John 5:22-23"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["John 5:22-23"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										:
 									</p>
 									<ul className="list-disc pl-5">
 										<li>
 											Believers{" "}
-											<strong className=" text-red-600">
-												(1 Corinthians 3:10-15; 2 Corinthians 5:10)
+											<strong
+												className="text-red-600 cursor-pointer relative"
+												onClick={() => toggleVerse("1 Corinthians 3:10-15")}
+											>
+												(1 Corinthians 3:10-15)
+												{visibleVerse === "1 Corinthians 3:10-15" &&
+													verseData["1 Corinthians 3:10-15"] && (
+														<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+															<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+																{verseData["1 Corinthians 3:10-15"]}
+															</p>
+														</div>
+													)}
+											</strong>{" "}
+											<strong
+												className="text-red-600 cursor-pointer relative"
+												onClick={() => toggleVerse("2 Corinthians 5:10")}
+											>
+												(2 Corinthians 5:10)
+												{visibleVerse === "2 Corinthians 5:10" &&
+													verseData["2 Corinthians 5:10"] && (
+														<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+															<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+																{verseData["2 Corinthians 5:10"]}
+															</p>
+														</div>
+													)}
 											</strong>
 											.
 										</li>
 										<li>
-											Living inhabitants of the earth at His glorious return
-											<strong className=" text-red-600">
+											Living inhabitants of the earth at His glorious return{" "}
+											<strong
+												className="text-red-600 cursor-pointer relative"
+												onClick={() => toggleVerse("Matthew 25:31-46")}
+											>
 												(Matthew 25:31-46)
+												{visibleVerse === "Matthew 25:31-46" &&
+													verseData["Matthew 25:31-46"] && (
+														<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+															<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+																{verseData["Matthew 25:31-46"]}
+															</p>
+														</div>
+													)}
 											</strong>
 											.
 										</li>
 										<li>
 											Unbelieving dead at the Great White Throne{" "}
-											<strong className=" text-red-600">(Rev. 20:11-15)</strong>
+											<strong
+												className="text-red-600 cursor-pointer relative"
+												onClick={() => toggleVerse("Revelation 20:11-15")}
+											>
+												(Revelation 20:11-15)
+												{visibleVerse === "Revelation 20:11-15" &&
+													verseData["Revelation 20:11-15"] && (
+														<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+															<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+																{verseData["Revelation 20:11-15"]}
+															</p>
+														</div>
+													)}
+											</strong>
 											.
 										</li>
 									</ul>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										3. Mediator and Final Judge
 									</h3>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4">
 										As the mediator between God and man{" "}
-										<strong className=" text-red-600">(1 Timothy 2:5)</strong>,
-										the head of His body the church{" "}
-										<strong className=" text-red-600">
-											(Ephesians 1:22; 5:23; Colossians 1:18)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("1 Timothy 2:5")}
+										>
+											(1 Timothy 2:5)
+											{visibleVerse === "1 Timothy 2:5" &&
+												verseData["1 Timothy 2:5"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["1 Timothy 2:5"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										, the head of His body the church{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Ephesians 1:22")}
+										>
+											(Ephesians 1:22)
+											{visibleVerse === "Ephesians 1:22" &&
+												verseData["Ephesians 1:22"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Ephesians 1:22"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										,{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Ephesians 5:23")}
+										>
+											(Ephesians 5:23)
+											{visibleVerse === "Ephesians 5:23" &&
+												verseData["Ephesians 5:23"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Ephesians 5:23"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										,{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Colossians 1:18")}
+										>
+											(Colossians 1:18)
+											{visibleVerse === "Colossians 1:18" &&
+												verseData["Colossians 1:18"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Colossians 1:18"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										, and the coming universal King who will reign on the throne
 										of David{" "}
-										<strong className=" text-red-600">
-											(Isaiah 9:6; Luke 1:31-33)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Isaiah 9:6")}
+										>
+											(Isaiah 9:6)
+											{visibleVerse === "Isaiah 9:6" &&
+												verseData["Isaiah 9:6"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Isaiah 9:6"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										,{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Luke 1:31-33")}
+										>
+											(Luke 1:31-33)
+											{visibleVerse === "Luke 1:31-33" &&
+												verseData["Luke 1:31-33"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Luke 1:31-33"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										, He is the final judge of all who fail to place their trust
 										in Him as Savior and Lord{" "}
-										<strong className=" text-red-600">
-											(Matthew 25:14-46; Acts 17:30-31)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Matthew 25:14-46")}
+										>
+											(Matthew 25:14-46)
+											{visibleVerse === "Matthew 25:14-46" &&
+												verseData["Matthew 25:14-46"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Matthew 25:14-46"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										,{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Acts 17:30-31")}
+										>
+											(Acts 17:30-31)
+											{visibleVerse === "Acts 17:30-31" &&
+												verseData["Acts 17:30-31"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Acts 17:30-31"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
@@ -518,196 +1738,763 @@ const page = () => {
 						</div>
 
 						<div>
-							<h2 className="text-xl font-semibold text-navy dark:text-white mb-6">
+							<h2 className="text-xl xl:text-h3 font-semibold text-navy dark:text-white mb-6">
 								E. God the Holy Spirit
 							</h2>
 
 							<div className="space-y-4">
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										1. Divine Attributes
 									</h3>
-									<p>
+									<p className=" xl:text-lg 3xl:text-h4">
 										We teach that the Holy Spirit is a divine person, eternal,
 										underived, possessing all the attributes of the Godhead:
 									</p>
 									<ul className="list-disc pl-5">
 										<li>
 											Intellect{" "}
-											<strong className=" text-red-600">
+											<strong
+												className="text-red-600 cursor-pointer relative"
+												onClick={() => toggleVerse("1 Corinthians 2:10-13")}
+											>
 												(1 Corinthians 2:10-13)
+												{visibleVerse === "1 Corinthians 2:10-13" &&
+													verseData["1 Corinthians 2:10-13"] && (
+														<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+															<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+																{verseData["1 Corinthians 2:10-13"]}
+															</p>
+														</div>
+													)}
 											</strong>
 											;
 										</li>
 										<li>
 											Emotions{" "}
-											<strong className=" text-red-600">
+											<strong
+												className="text-red-600 cursor-pointer relative"
+												onClick={() => toggleVerse("Ephesians 4:30")}
+											>
 												(Ephesians 4:30)
+												{visibleVerse === "Ephesians 4:30" &&
+													verseData["Ephesians 4:30"] && (
+														<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+															<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+																{verseData["Ephesians 4:30"]}
+															</p>
+														</div>
+													)}
 											</strong>
 											;
 										</li>
 										<li>
 											Will{" "}
-											<strong className=" text-red-600">
+											<strong
+												className="text-red-600 cursor-pointer relative"
+												onClick={() => toggleVerse("1 Corinthians 12:11")}
+											>
 												(1 Corinthians 12:11)
+												{visibleVerse === "1 Corinthians 12:11" &&
+													verseData["1 Corinthians 12:11"] && (
+														<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+															<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+																{verseData["1 Corinthians 12:11"]}
+															</p>
+														</div>
+													)}
 											</strong>
 											;
 										</li>
 										<li>
 											Eternality{" "}
-											<strong className=" text-red-600">(Hebrews 9:14)</strong>;
+											<strong
+												className="text-red-600 cursor-pointer relative"
+												onClick={() => toggleVerse("Hebrews 9:14")}
+											>
+												(Hebrews 9:14)
+												{visibleVerse === "Hebrews 9:14" &&
+													verseData["Hebrews 9:14"] && (
+														<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+															<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+																{verseData["Hebrews 9:14"]}
+															</p>
+														</div>
+													)}
+											</strong>
+											;
 										</li>
 										<li>
 											Omnipresence{" "}
-											<strong className=" text-red-600">
+											<strong
+												className="text-red-600 cursor-pointer relative"
+												onClick={() => toggleVerse("Psalm 139:7-10")}
+											>
 												(Psalm 139:7-10)
+												{visibleVerse === "Psalm 139:7-10" &&
+													verseData["Psalm 139:7-10"] && (
+														<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+															<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+																{verseData["Psalm 139:7-10"]}
+															</p>
+														</div>
+													)}
 											</strong>
 											;
 										</li>
 										<li>
 											Omniscience{" "}
-											<strong className=" text-red-600">
+											<strong
+												className="text-red-600 cursor-pointer relative"
+												onClick={() => toggleVerse("Isaiah 40:13-14")}
+											>
 												(Isaiah 40:13-14)
+												{visibleVerse === "Isaiah 40:13-14" &&
+													verseData["Isaiah 40:13-14"] && (
+														<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+															<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+																{verseData["Isaiah 40:13-14"]}
+															</p>
+														</div>
+													)}
 											</strong>
 											;
 										</li>
 										<li>
 											Omnipotence{" "}
-											<strong className=" text-red-600">(Romans 15:13)</strong>;
+											<strong
+												className="text-red-600 cursor-pointer relative"
+												onClick={() => toggleVerse("Romans 15:13")}
+											>
+												(Romans 15:13)
+												{visibleVerse === "Romans 15:13" &&
+													verseData["Romans 15:13"] && (
+														<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+															<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+																{verseData["Romans 15:13"]}
+															</p>
+														</div>
+													)}
+											</strong>
+											;
 										</li>
 										<li>
 											Truthfulness{" "}
-											<strong className=" text-red-600">(John 16:13)</strong>.
+											<strong
+												className="text-red-600 cursor-pointer relative"
+												onClick={() => toggleVerse("John 16:13")}
+											>
+												(John 16:13)
+												{visibleVerse === "John 16:13" &&
+													verseData["John 16:13"] && (
+														<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+															<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+																{verseData["John 16:13"]}
+															</p>
+														</div>
+													)}
+											</strong>
+											.
 										</li>
 									</ul>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4">
 										We teach that in all the divine attributes He is coequal and
 										consubstantial with the Father and the Son{" "}
-										<strong className=" text-red-600">
-											(Matthew 28:19; Acts 5:3-4; 28:25-26; 1 Corinthians
-											12:4-6; 2 Corinthians 13:14; Jeremiah 31:31-34 with
-											Hebrews 10:15-17)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Matthew 28:19")}
+										>
+											(Matthew 28:19)
+											{visibleVerse === "Matthew 28:19" &&
+												verseData["Matthew 28:19"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Matthew 28:19"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										; <br />
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Acts 5:3-4")}
+										>
+											(Acts 5:3-4)
+											{visibleVerse === "Acts 5:3-4" &&
+												verseData["Acts 5:3-4"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Acts 5:3-4"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Acts 28:25-26")}
+										>
+											(Acts 28:25-26)
+											{visibleVerse === "Acts 28:25-26" &&
+												verseData["Acts 28:25-26"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Acts 28:25-26"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("1 Corinthians 12:4-6")}
+										>
+											(1 Corinthians 12:4-6)
+											{visibleVerse === "1 Corinthians 12:4-6" &&
+												verseData["1 Corinthians 12:4-6"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["1 Corinthians 12:4-6"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("2 Corinthians 13:14")}
+										>
+											(2 Corinthians 13:14)
+											{visibleVerse === "2 Corinthians 13:14" &&
+												verseData["2 Corinthians 13:14"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["2 Corinthians 13:14"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Jeremiah 31:31-34")}
+										>
+											(Jeremiah 31:31-34)
+											{visibleVerse === "Jeremiah 31:31-34" &&
+												verseData["Jeremiah 31:31-34"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Jeremiah 31:31-34"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										;{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Hebrews 10:15-17")}
+										>
+											(Hebrews 10:15-17)
+											{visibleVerse === "Hebrews 10:15-17" &&
+												verseData["Hebrews 10:15-17"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Hebrews 10:15-17"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										2. Work of the Holy Spirit
 									</h3>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4">
 										We teach that it is the work of the Holy Spirit to execute
 										the divine will with relation to all mankind. We recognize
 										His sovereign activity in creation{" "}
-										<strong className=" text-red-600">(Genesis 1:2)</strong>,
-										the incarnation{" "}
-										<strong className=" text-red-600">(Matthew 1:18)</strong>,
-										the written revelation{" "}
-										<strong className=" text-red-600">(2 Peter 1:20-21)</strong>
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Genesis 1:2")}
+										>
+											(Genesis 1:2)
+											{visibleVerse === "Genesis 1:2" &&
+												verseData["Genesis 1:2"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Genesis 1:2"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										, the incarnation{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Matthew 1:18")}
+										>
+											(Matthew 1:18)
+											{visibleVerse === "Matthew 1:18" &&
+												verseData["Matthew 1:18"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Matthew 1:18"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										, the written revelation{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("2 Peter 1:20-21")}
+										>
+											(2 Peter 1:20-21)
+											{visibleVerse === "2 Peter 1:20-21" &&
+												verseData["2 Peter 1:20-21"] && (
+													<div className="absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["2 Peter 1:20-21"]}
+														</p>
+													</div>
+												)}
+										</strong>
 										, and the work of salvation{" "}
-										<strong className=" text-red-600">(John 3:5-7)</strong>.
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("John 3:5-7")}
+										>
+											(John 3:5-7)
+											{visibleVerse === "John 3:5-7" &&
+												verseData["John 3:5-7"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["John 3:5-7"]}
+														</p>
+													</div>
+												)}
+										</strong>
+										.
 									</p>
-									<p>
+									<p className="xl:text-lg 3xl:text-h4 mb-10">
 										We teach that the work of the Holy Spirit in this age began
 										at Pentecost, when He came from the Father as promised by
 										Christ{" "}
-										<strong className=" text-red-600">
-											(John 14:16-17; 15:26)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("John 14:16-17")}
+										>
+											(John 14:16-17)
+											{visibleVerse === "John 14:16-17" &&
+												verseData["John 14:16-17"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["John 14:16-17"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("John 15:26")}
+										>
+											(John 15:26)
+											{visibleVerse === "John 15:26" &&
+												verseData["John 15:26"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["John 15:26"]}
+														</p>
+													</div>
+												)}
 										</strong>{" "}
 										to initiate and complete the building of the body of Christ,
 										which is His church{" "}
-										<strong className=" text-red-600">
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("1 Corinthians 12:13")}
+										>
 											(1 Corinthians 12:13)
+											{visibleVerse === "1 Corinthians 12:13" &&
+												verseData["1 Corinthians 12:13"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["1 Corinthians 12:13"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										. The broad scope of His divine activity includes convicting
 										the world of sin, of righteousness, and of judgment;
 										glorifying the Lord Jesus Christ and transforming believers
 										into the image of Christ{" "}
-										<strong className=" text-red-600">
-											(John 16:7-9; Acts 1:5; 2:4; Romans 8:29; 2 Corinthians
-											3:18; Ephesians 2:22)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("John 16:7-9")}
+										>
+											(John 16:7-9)
+											{visibleVerse === "John 16:7-9" &&
+												verseData["John 16:7-9"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["John 16:7-9"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Acts 1:5")}
+										>
+											(Acts 1:5)
+											{visibleVerse === "Acts 1:5" && verseData["Acts 1:5"] && (
+												<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+													<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+														{verseData["Acts 1:5"]}
+													</p>
+												</div>
+											)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Acts 2:4")}
+										>
+											(Acts 2:4)
+											{visibleVerse === "Acts 2:4" && verseData["Acts 2:4"] && (
+												<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+													<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+														{verseData["Acts 2:4"]}
+													</p>
+												</div>
+											)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Romans 8:29")}
+										>
+											(Romans 8:29)
+											{visibleVerse === "Romans 8:29" &&
+												verseData["Romans 8:29"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Romans 8:29"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<br />
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("2 Corinthians 3:18")}
+										>
+											(2 Corinthians 3:18)
+											{visibleVerse === "2 Corinthians 3:18" &&
+												verseData["2 Corinthians 3:18"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["2 Corinthians 3:18"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Ephesians 2:22")}
+										>
+											(Ephesians 2:22)
+											{visibleVerse === "Ephesians 2:22" &&
+												verseData["Ephesians 2:22"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Ephesians 2:22"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
 								</div>
 
-								<h2 className="text-xl font-semibold text-navy dark:text-white mb-6">
+								<h2 className="text-xl xl:text-h3 font-semibold text-navy dark:text-white mb-6">
 									F. Holy Spirit and the Church
 								</h2>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										1. Regeneration and Empowerment
 									</h3>
-									<p>
+									<p className=" xl:text-lg 3xl:text-h4">
 										We teach that the Holy Spirit is the supernatural and
 										sovereign agent in regeneration, baptizing all believers
-										into the body of Christ{" "}
-										<strong className=" text-red-600">
-											(1 Corinthians 12:13)
-										</strong>
-										. The Holy Spirit also indwells, sanctifies, instructs,
-										empowers them for service, and seals them unto the day of
-										redemption
-										<strong className=" text-red-600">
-											(Romans 8:9; 2 Corinthians 3:6; Ephesians 1:13)
+										into the body of Christ. The Holy Spirit also indwells,
+										sanctifies, instructs, empowers them for service, and seals
+										them unto the day of redemption{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Romans 8:9")}
+										>
+											(Romans 8:9)
+											{visibleVerse === "Romans 8:9" &&
+												verseData["Romans 8:9"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Romans 8:9"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("2 Corinthians 3:6")}
+										>
+											(2 Corinthians 3:6)
+											{visibleVerse === "2 Corinthians 3:6" &&
+												verseData["2 Corinthians 3:6"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["2 Corinthians 3:6"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Ephesians 1:13")}
+										>
+											(Ephesians 1:13)
+											{visibleVerse === "Ephesians 1:13" &&
+												verseData["Ephesians 1:13"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Ephesians 1:13"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										2. Divine Teacher
 									</h3>
-									<p>
+									<p className=" xl:text-lg 3xl:text-h4">
 										We teach that the Holy Spirit is the divine teacher who
 										guided the apostles and prophets into all truth as they
 										committed to writing God’s revelation, the Bible. Every
 										believer possesses the indwelling presence of the Holy
 										Spirit from the moment of salvation, and it is the duty of
 										all those born of the Spirit to be filled with{" "}
-										<strong className=" text-red-600">(controlled by)</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("(controlled by)")}
+										>
+											(controlled by)
+											{visibleVerse === "(controlled by)" &&
+												verseData["(controlled by)"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["(controlled by)"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
 										the Spirit{" "}
-										<strong className=" text-red-600">
-											(John 16:13; Romans 8:9; Ephesians 5:18; 2 Peter 1:19-21;
-											1 John 2:20,27)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Ephesians 5:18")}
+										>
+											(Ephesians 5:18)
+											{visibleVerse === "Ephesians 5:18" &&
+												verseData["Ephesians 5:18"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Ephesians 5:18"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("2 Peter 1:19-21")}
+										>
+											(2 Peter 1:19-21)
+											{visibleVerse === "2 Peter 1:19-21" &&
+												verseData["2 Peter 1:19-21"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["2 Peter 1:19-21"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("1 John 2:20,27")}
+										>
+											(1 John 2:20,27)
+											{visibleVerse === "1 John 2:20,27" &&
+												verseData["1 John 2:20,27"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["1 John 2:20,27"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
 								</div>
 
 								<div>
-									<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+									<h3 className="text-lg xl:text-h4 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 										3. Spiritual Gifts
 									</h3>
-									<p>
+									<p className=" xl:text-lg 3xl:text-h4">
 										We teach that the Holy Spirit alone administers spiritual
 										gifts to the church. The Holy Spirit glorifies neither
 										Himself nor His gifts by ostentatious displays, but all He
 										does is to glorify Christ, to implement His work of
 										redeeming the lost, and to build up believers in the most
 										holy faith{" "}
-										<strong className=" text-red-600">
-											(John 16:13-14; Acts 1:8; 1 Corinthians 12:4-11; 2
-											Corinthians 3:18)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("John 16:13-14")}
+										>
+											(John 16:13-14)
+											{visibleVerse === "John 16:13-14" &&
+												verseData["John 16:13-14"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["John 16:13-14"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Acts 1:8")}
+										>
+											(Acts 1:8)
+											{visibleVerse === "Acts 1:8" && verseData["Acts 1:8"] && (
+												<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+													<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+														{verseData["Acts 1:8"]}
+													</p>
+												</div>
+											)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("1 Corinthians 12:4-11")}
+										>
+											(1 Corinthians 12:4-11)
+											{visibleVerse === "1 Corinthians 12:4-11" &&
+												verseData["1 Corinthians 12:4-11"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["1 Corinthians 12:4-11"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("2 Corinthians 3:18")}
+										>
+											(2 Corinthians 3:18)
+											{visibleVerse === "2 Corinthians 3:18" &&
+												verseData["2 Corinthians 3:18"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["2 Corinthians 3:18"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
-									<p>
+									<p className=" xl:text-lg 3xl:text-h4">
 										We teach, in this respect, that God the Holy Spirit is
 										sovereign in the bestowing of all His gifts for the
-										perfecting of the saints today and that speaking in tongues
-										<strong className=" text-red-600">
+										perfecting of the saints today and that speaking in tongues{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() =>
+												toggleVerse("(unlearned foreign languages)")
+											}
+										>
 											(unlearned foreign languages)
+											{visibleVerse === "(unlearned foreign languages)" &&
+												verseData["(unlearned foreign languages)"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["(unlearned foreign languages)"]}
+														</p>
+													</div>
+												)}
 										</strong>{" "}
 										and the working of sign miracles gradually stopped as the
 										New Testament Scriptures were completed and their authority
 										became established{" "}
-										<strong className=" text-red-600">
-											(1 Corinthians 12:4-11; 13:8-10; 2 Corinthians 12:12;
-											Ephesians 4:7-12; Hebrews 2:1-4)
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("1 Corinthians 13:8-10")}
+										>
+											(1 Corinthians 13:8-10)
+											{visibleVerse === "1 Corinthians 13:8-10" &&
+												verseData["1 Corinthians 13:8-10"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["1 Corinthians 13:8-10"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<br />
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("2 Corinthians 12:12")}
+										>
+											(2 Corinthians 12:12)
+											{visibleVerse === "2 Corinthians 12:12" &&
+												verseData["2 Corinthians 12:12"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["2 Corinthians 12:12"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Ephesians 4:7-12")}
+										>
+											(Ephesians 4:7-12)
+											{visibleVerse === "Ephesians 4:7-12" &&
+												verseData["Ephesians 4:7-12"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Ephesians 4:7-12"]}
+														</p>
+													</div>
+												)}
+										</strong>{" "}
+										<strong
+											className="text-red-600 cursor-pointer relative"
+											onClick={() => toggleVerse("Hebrews 2:1-4")}
+										>
+											(Hebrews 2:1-4)
+											{visibleVerse === "Hebrews 2:1-4" &&
+												verseData["Hebrews 2:1-4"] && (
+													<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+														<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+															{verseData["Hebrews 2:1-4"]}
+														</p>
+													</div>
+												)}
 										</strong>
 										.
 									</p>
@@ -718,49 +2505,114 @@ const page = () => {
 				</div>
 			</section>
 			<section className="py-10 bg-background px-6">
-				<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg mx-auto ">
-					<h2 className="text-h3 lg:text-h2 font-semibold text-navy dark:text-white mb-6 text-center">
+				<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg mx-auto 3xl:max-w-screen-2xl ">
+					<h2 className="text-h3 lg:text-h2 3xl:text-h1 font-semibold text-navy dark:text-white mb-6 text-center">
 						III. Man
 					</h2>
 
 					<div className="space-y-4">
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								1. Creation and Nature
 							</h3>
-							<p>
+							<p className="xl:text-lg 3xl:text-h4">
 								We teach that man was directly and immediately created by God in
 								His image and likeness. Man was created free of sin with a
 								rational nature, intelligence, volition, self-determination, and
 								moral responsibility to God{" "}
-								<strong className=" text-red-600">
-									(Genesis 2:7, 15-25; James 3:9)
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Genesis 2:7")}
+								>
+									(Genesis 2:7)
+									{visibleVerse === "Genesis 2:7" &&
+										verseData["Genesis 2:7"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Genesis 2:7"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								and{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("James 3:9")}
+								>
+									(James 3:9)
+									{visibleVerse === "James 3:9" && verseData["James 3:9"] && (
+										<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+											<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+												{verseData["James 3:9"]}
+											</p>
+										</div>
+									)}
 								</strong>
 								.
 							</p>
 						</div>
 
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								2. Purpose of Creation
 							</h3>
-							<p>
+							<p className="xl:text-lg 3xl:text-h4">
 								We teach that God’s intention in the creation of man was that
 								man should glorify God, enjoy God’s fellowship, live his life in
 								the will of God and by this, accomplish God’s purpose for man in
 								the world{" "}
-								<strong className=" text-red-600">
-									(Isaiah 43:7; Colossians 1:16; Revelation 4:11)
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Isaiah 43:7")}
+								>
+									(Isaiah 43:7)
+									{visibleVerse === "Isaiah 43:7" &&
+										verseData["Isaiah 43:7"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Isaiah 43:7"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								and{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Colossians 1:16")}
+								>
+									(Colossians 1:16)
+									{visibleVerse === "Colossians 1:16" &&
+										verseData["Colossians 1:16"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Colossians 1:16"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								and <br />
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Revelation 4:11")}
+								>
+									(Revelation 4:11)
+									{visibleVerse === "Revelation 4:11" &&
+										verseData["Revelation 4:11"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Revelation 4:11"]}
+												</p>
+											</div>
+										)}
 								</strong>
 								.
 							</p>
 						</div>
-
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								3. The Fall and Its Consequences
 							</h3>
-							<p>
+							<p className="xl:text-lg 3xl:text-h4">
 								We teach that in Adam’s sin of disobedience to the revealed will
 								and Word of God, man lost his innocence, incurred the penalty of
 								spiritual and physical death, became subject to the wrath of
@@ -770,27 +2622,214 @@ const page = () => {
 								recover himself, man is hopelessly lost. Man’s salvation is
 								thereby wholly of God’s grace through the redemptive work of our
 								Lord Jesus Christ{" "}
-								<strong className=" text-red-600">
-									(Genesis 2:16-17; 3:1-19; John 3:36; Romans 3:23, 6:23; 1
-									Corinthians 2:14; Ephesians 2:1-3; 1 Timothy 2:13-14; 1 John
-									1:8)
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Genesis 2:16-17")}
+								>
+									(Genesis 2:16-17)
+									{visibleVerse === "Genesis 2:16-17" &&
+										verseData["Genesis 2:16-17"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Genesis 2:16-17"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Genesis 3:1-19")}
+								>
+									(Genesis 3:1-19)
+									{visibleVerse === "Genesis 3:1-19" &&
+										verseData["Genesis 3:1-19"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Genesis 3:1-19"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("John 3:36")}
+								>
+									(John 3:36)
+									{visibleVerse === "John 3:36" && verseData["John 3:36"] && (
+										<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+											<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+												{verseData["John 3:36"]}
+											</p>
+										</div>
+									)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Romans 3:23")}
+								>
+									(Romans 3:23)
+									{visibleVerse === "Romans 3:23" &&
+										verseData["Romans 3:23"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Romans 3:23"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Romans 6:23")}
+								>
+									(Romans 6:23)
+									{visibleVerse === "Romans 6:23" &&
+										verseData["Romans 6:23"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Romans 6:23"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("1 Corinthians 2:14")}
+								>
+									(1 Corinthians 2:14)
+									{visibleVerse === "1 Corinthians 2:14" &&
+										verseData["1 Corinthians 2:14"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["1 Corinthians 2:14"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Ephesians 2:1-3")}
+								>
+									(Ephesians 2:1-3)
+									{visibleVerse === "Ephesians 2:1-3" &&
+										verseData["Ephesians 2:1-3"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Ephesians 2:1-3"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<br />
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("1 Timothy 2:13-14")}
+								>
+									(1 Timothy 2:13-14)
+									{visibleVerse === "1 Timothy 2:13-14" &&
+										verseData["1 Timothy 2:13-14"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["1 Timothy 2:13-14"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("1 John 1:8")}
+								>
+									(1 John 1:8)
+									{visibleVerse === "1 John 1:8" && verseData["1 John 1:8"] && (
+										<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+											<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+												{verseData["1 John 1:8"]}
+											</p>
+										</div>
+									)}
 								</strong>
-								.
 							</p>
 						</div>
 
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								4. Universal Sinfulness
 							</h3>
-							<p>
+							<p className="xl:text-lg 3xl:text-h4">
 								We teach that because all men were in Adam, the consequence of
 								Adam’s sin has been transmitted{" "}
-								<strong className=" text-red-600">(imputed)</strong> to all men
+								<strong className="text-red-600">(imputed)</strong> to all men
 								of all ages, Jesus Christ being the only exception. All men are
 								thus sinners by divine declaration, by nature, and by choice{" "}
-								<strong className=" text-red-600">
-									(Psalm 14:1-3; Jeremiah 17:9; Romans 3:9-18, 23; 5:10-12)
+								<br />
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Psalm 14:1-3")}
+								>
+									(Psalm 14:1-3)
+									{visibleVerse === "Psalm 14:1-3" &&
+										verseData["Psalm 14:1-3"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Psalm 14:1-3"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Jeremiah 17:9")}
+								>
+									(Jeremiah 17:9)
+									{visibleVerse === "Jeremiah 17:9" &&
+										verseData["Jeremiah 17:9"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Jeremiah 17:9"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Romans 3:9-18")}
+								>
+									(Romans 3:9-18)
+									{visibleVerse === "Romans 3:9-18" &&
+										verseData["Romans 3:9-18"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Romans 3:9-18"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Romans 3:23")}
+								>
+									(Romans 3:23)
+									{visibleVerse === "Romans 3:23" &&
+										verseData["Romans 3:23"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Romans 3:23"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Romans 5:10-12")}
+								>
+									(Romans 5:10-12)
+									{visibleVerse === "Romans 5:10-12" &&
+										verseData["Romans 5:10-12"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Romans 5:10-12"]}
+												</p>
+											</div>
+										)}
 								</strong>
 								.
 							</p>
@@ -799,183 +2838,1032 @@ const page = () => {
 				</div>
 			</section>
 			<section className="py-10 bg-background px-6">
-				<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg mx-auto ">
-					<h2 className="text-h3 lg:text-h2 font-semibold text-navy dark:text-white mb-6 text-center">
+				<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg mx-auto 3xl:max-w-screen-2xl ">
+					<h2 className="text-h3 lg:text-h2 3xl:text-h1 font-semibold text-navy dark:text-white mb-6 text-center">
 						IV. Salvation
 					</h2>
 
 					<div className="space-y-4">
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								1. General Overview
 							</h3>
-							<p>
+							<p className="xl:text-lg 3xl:text-h4">
 								We teach that salvation is wholly of God by grace, through the
 								redemption of Jesus Christ, the merit of His shed blood, and not
 								on the basis of human merit or works{" "}
-								<strong className=" text-red-600">
-									(John 1:12; Ephesians 1:7; 2:8-10; 1 Peter 1:18-19)
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("John 1:12")}
+								>
+									(John 1:12)
+									{visibleVerse === "John 1:12" && verseData["John 1:12"] && (
+										<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+											<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+												{verseData["John 1:12"]}
+											</p>
+										</div>
+									)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Ephesians 1:7")}
+								>
+									(Ephesians 1:7)
+									{visibleVerse === "Ephesians 1:7" &&
+										verseData["Ephesians 1:7"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Ephesians 1:7"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Ephesians 2:8-10")}
+								>
+									(Ephesians 2:8-10)
+									{visibleVerse === "Ephesians 2:8-10" &&
+										verseData["Ephesians 2:8-10"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Ephesians 2:8-10"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("1 Peter 1:18-19")}
+								>
+									(1 Peter 1:18-19)
+									{visibleVerse === "1 Peter 1:18-19" &&
+										verseData["1 Peter 1:18-19"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["1 Peter 1:18-19"]}
+												</p>
+											</div>
+										)}
 								</strong>
 								.
 							</p>
 						</div>
 
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								A. Regeneration
 							</h3>
-							<p>
+							<p className="xl:text-lg 3xl:text-h4">
 								1. We teach that regeneration is a supernatural work of the Holy
-								Spirit by which the divine nature and divine life are given
-								<strong className=" text-red-600">(John 3:3-7)</strong>.
+								Spirit by which the divine nature and divine life are given{" "}
+								<br />
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("John 3:3-7")}
+								>
+									(John 3:3-7)
+									{visibleVerse === "John 3:3-7" && verseData["John 3:3-7"] && (
+										<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+											<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+												{verseData["John 3:3-7"]}
+											</p>
+										</div>
+									)}
+								</strong>
+								.
 							</p>
-							<p>
+							<p className="xl:text-lg 3xl:text-h4">
 								2. We teach that regeneration is instantaneous and is
 								accomplished solely by the power of the Holy Spirit through the
 								instrumentality of the Word of God{" "}
-								<strong className=" text-red-600">(John 5:24)</strong>.
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("John 5:24")}
+								>
+									(John 5:24)
+									{visibleVerse === "John 5:24" && verseData["John 5:24"] && (
+										<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+											<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+												{verseData["John 5:24"]}
+											</p>
+										</div>
+									)}
+								</strong>
+								.
 							</p>
-							<p>
+							<p className="xl:text-lg 3xl:text-h4">
 								3. We teach that the Holy Spirit enables voluntary obedience to
 								the gospel.
 							</p>
-							<p>
+							<p className="xl:text-lg 3xl:text-h4">
 								4. We teach that genuine regeneration is manifested by
 								repentance, faith, and righteous living. Good works will be its
 								proper evidence and fruit{" "}
-								<strong className=" text-red-600">
-									(1 Corinthians 6:19-20; Ephesians 2:10)
-								</strong>
-								, and will manifest to the extent that the believer submits to
-								the control of the Holy Spirit in his life through faithful
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("1 Corinthians 6:19-20")}
+								>
+									(1 Corinthians 6:19-20)
+									{visibleVerse === "1 Corinthians 6:19-20" &&
+										verseData["1 Corinthians 6:19-20"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["1 Corinthians 6:19-20"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								and will manifest to the extent that the believer submits to the
+								control of the Holy Spirit in his life through faithful
 								obedience to the Word of God{" "}
-								<strong className=" text-red-600">
-									(Ephesians 5:17-21; Philippians 2:12b; Colossians 3:16; 2
-									Peter 1:4-10)
-								</strong>
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Ephesians 5:17-21")}
+								>
+									(Ephesians 5:17-21)
+									{visibleVerse === "Ephesians 5:17-21" &&
+										verseData["Ephesians 5:17-21"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Ephesians 5:17-21"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Philippians 2:12")}
+								>
+									(Philippians 2:12)
+									{visibleVerse === "Philippians 2:12" &&
+										verseData["Philippians 2:12"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Philippians 2:12"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Colossians 3:16")}
+								>
+									(Colossians 3:16)
+									{visibleVerse === "Colossians 3:16" &&
+										verseData["Colossians 3:16"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Colossians 3:16"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<br />
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("2 Peter 1:4-10")}
+								>
+									(2 Peter 1:4-10)
+									{visibleVerse === "2 Peter 1:4-10" &&
+										verseData["2 Peter 1:4-10"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["2 Peter 1:4-10"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
 								. This obedience causes the believer to be increasingly
-								conformed to the image of our Lord Jesus Christ{" "}
-								<strong className=" text-red-600">(2 Corinthians 3:18)</strong>.
-								Such a conformity is climaxed in the believer’s glorification at
-								Christ’s coming
-								<strong className=" text-red-600">
-									(Romans 8:17; 2 Peter 1:4; 1 John 3:2-3)
+								conformed to the image of our Lord Jesus Christ <br />
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("2 Corinthians 3:18")}
+								>
+									(2 Corinthians 3:18)
+									{visibleVerse === "2 Corinthians 3:18" &&
+										verseData["2 Corinthians 3:18"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["2 Corinthians 3:18"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								. Such a conformity is climaxed in the believer’s glorification
+								at Christ’s coming{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Romans 8:17")}
+								>
+									(Romans 8:17)
+									{visibleVerse === "Romans 8:17" &&
+										verseData["Romans 8:17"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Romans 8:17"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<br />
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("2 Peter 1:4")}
+								>
+									(2 Peter 1:4)
+									{visibleVerse === "2 Peter 1:4" &&
+										verseData["2 Peter 1:4"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["2 Peter 1:4"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("1 John 3:2-3")}
+								>
+									(1 John 3:2-3)
+									{visibleVerse === "1 John 3:2-3" &&
+										verseData["1 John 3:2-3"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["1 John 3:2-3"]}
+												</p>
+											</div>
+										)}
 								</strong>
 								.
 							</p>
 						</div>
 
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								B. Election
 							</h3>
-							<p>
+							<p className="xl:text-lg 3xl:text-h4">
 								1. We teach that election is the act of God by which, before the
 								foundation of the world, He chose in Christ those whom He
 								graciously regenerates, saves, and sanctifies{" "}
-								<strong className=" text-red-600">
-									(Romans 8:28-30; Ephesians 1:4-11; 2 Thessalonians 2:13; 2
-									Timothy 2:10; 1 Peter 1:1-2)
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Romans 8:28-30")}
+								>
+									(Romans 8:28-30)
+									{visibleVerse === "Romans 8:28-30" &&
+										verseData["Romans 8:28-30"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Romans 8:28-30"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Ephesians 1:4-11")}
+								>
+									(Ephesians 1:4-11)
+									{visibleVerse === "Ephesians 1:4-11" &&
+										verseData["Ephesians 1:4-11"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Ephesians 1:4-11"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("2 Thessalonians 2:13")}
+								>
+									(2 Thessalonians 2:13)
+									{visibleVerse === "2 Thessalonians 2:13" &&
+										verseData["2 Thessalonians 2:13"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["2 Thessalonians 2:13"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("2 Timothy 2:10")}
+								>
+									(2 Timothy 2:10)
+									{visibleVerse === "2 Timothy 2:10" &&
+										verseData["2 Timothy 2:10"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["2 Timothy 2:10"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("1 Peter 1:1-2")}
+								>
+									(1 Peter 1:1-2)
+									{visibleVerse === "1 Peter 1:1-2" &&
+										verseData["1 Peter 1:1-2"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["1 Peter 1:1-2"]}
+												</p>
+											</div>
+										)}
 								</strong>
 								.
 							</p>
-							<p>
+
+							<p className="xl:text-lg 3xl:text-h4">
 								2. We teach that sovereign election does not contradict or
 								negate the responsibility of man to repent and trust Christ as
 								Savior and Lord{" "}
-								<strong className=" text-red-600">
-									(Ezekiel 18:23, 32; 33:11; John 3:18-19, 36; 5:40; Romans
-									9:22-23; 2 Thessalonians 2:10-12; Revelation 22:17)
-								</strong>
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Ezekiel 18:23")}
+								>
+									(Ezekiel 18:23)
+									{visibleVerse === "Ezekiel 18:23" &&
+										verseData["Ezekiel 18:23"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Ezekiel 18:23"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Ezekiel 18:32")}
+								>
+									(Ezekiel 18:32)
+									{visibleVerse === "Ezekiel 18:32" &&
+										verseData["Ezekiel 18:32"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Ezekiel 18:32"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Ezekiel 33:11")}
+								>
+									(Ezekiel 33:11)
+									{visibleVerse === "Ezekiel 33:11" &&
+										verseData["Ezekiel 33:11"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Ezekiel 33:11"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("John 3:18-19")}
+								>
+									(John 3:18-19)
+									{visibleVerse === "John 3:18-19" &&
+										verseData["John 3:18-19"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["John 3:18-19"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("John 3:36")}
+								>
+									(John 3:36)
+									{visibleVerse === "John 3:36" && verseData["John 3:36"] && (
+										<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+											<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+												{verseData["John 3:36"]}
+											</p>
+										</div>
+									)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("John 5:40")}
+								>
+									(John 5:40)
+									{visibleVerse === "John 5:40" && verseData["John 5:40"] && (
+										<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+											<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+												{verseData["John 5:40"]}
+											</p>
+										</div>
+									)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Romans 9:22-23")}
+								>
+									(Romans 9:22-23)
+									{visibleVerse === "Romans 9:22-23" &&
+										verseData["Romans 9:22-23"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Romans 9:22-23"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<br />
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("2 Thessalonians 2:10-12")}
+								>
+									(2 Thessalonians 2:10-12)
+									{visibleVerse === "2 Thessalonians 2:10-12" &&
+										verseData["2 Thessalonians 2:10-12"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["2 Thessalonians 2:10-12"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Revelation 22:17")}
+								>
+									(Revelation 22:17)
+									{visibleVerse === "Revelation 22:17" &&
+										verseData["Revelation 22:17"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Revelation 22:17"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
 								. Nevertheless, since sovereign grace includes the means of
 								receiving the gift of salvation as well as the gift itself,
 								sovereign election will result in what God determines. All whom
 								the Father calls to Himself will come in faith, and all who come
 								in faith the Father will receive{" "}
-								<strong className=" text-red-600">
-									(John 6:37-40, 44; Acts 13:48; James 4:8)
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("John 6:37-40")}
+								>
+									(John 6:37-40)
+									{visibleVerse === "John 6:37-40" &&
+										verseData["John 6:37-40"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["John 6:37-40"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("John 6:44")}
+								>
+									(John 6:44)
+									{visibleVerse === "John 6:44" && verseData["John 6:44"] && (
+										<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+											<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+												{verseData["John 6:44"]}
+											</p>
+										</div>
+									)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Acts 13:48")}
+								>
+									(Acts 13:48)
+									{visibleVerse === "Acts 13:48" && verseData["Acts 13:48"] && (
+										<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+											<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+												{verseData["Acts 13:48"]}
+											</p>
+										</div>
+									)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("James 4:8")}
+								>
+									(James 4:8)
+									{visibleVerse === "James 4:8" && verseData["James 4:8"] && (
+										<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+											<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+												{verseData["James 4:8"]}
+											</p>
+										</div>
+									)}
 								</strong>
 								.
 							</p>
-							<p>
+							<p className="xl:text-lg 3xl:text-h4">
 								3. We teach that the unmerited favor that God grants to totally
 								depraved sinners is not related to any initiative on their own
 								part nor to God’s anticipation of what they might do by their
-								own will, but is solely of His sovereign grace and mercy
-								<strong className=" text-red-600">
-									(Ephesians 1:4-7; Titus 3:4-7; 1 Peter 1:2)
-								</strong>
+								own will, but is solely of His sovereign grace and mercy <br />
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Ephesians 1:4-7")}
+								>
+									(Ephesians 1:4-7)
+									{visibleVerse === "Ephesians 1:4-7" &&
+										verseData["Ephesians 1:4-7"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Ephesians 1:4-7"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Titus 3:4-7")}
+								>
+									(Titus 3:4-7)
+									{visibleVerse === "Titus 3:4-7" &&
+										verseData["Titus 3:4-7"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Titus 3:4-7"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("1 Peter 1:2")}
+								>
+									(1 Peter 1:2)
+									{visibleVerse === "1 Peter 1:2" &&
+										verseData["1 Peter 1:2"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["1 Peter 1:2"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
 								.
 							</p>
-							<p>
+							<p className="xl:text-lg 3xl:text-h4">
 								4. We teach that election should not be looked upon as based
 								merely on abstract sovereignty. God is truly sovereign, but He
 								exercises this sovereignty in harmony with His other attributes,
-								especially His omniscience, justice, holiness, and wisdom
-								<strong className=" text-red-600">(Romans 9:11-16)</strong>.
-								This sovereignty will always exalt the will of God in a manner
+								especially His omniscience, justice, holiness, and wisdom{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Romans 9:11-16")}
+								>
+									(Romans 9:11-16)
+									{visibleVerse === "Romans 9:11-16" &&
+										verseData["Romans 9:11-16"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Romans 9:11-16"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								. This sovereignty will always exalt the will of God in a manner
 								totally consistent with His character as revealed in the life of
 								our Lord Jesus Christ{" "}
-								<strong className=" text-red-600">
-									(Matthew 11:25-28; 2 Timothy 1:9)
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Matthew 11:25-28")}
+								>
+									(Matthew 11:25-28)
+									{visibleVerse === "Matthew 11:25-28" &&
+										verseData["Matthew 11:25-28"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Matthew 11:25-28"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("2 Timothy 1:9")}
+								>
+									(2 Timothy 1:9)
+									{visibleVerse === "2 Timothy 1:9" &&
+										verseData["2 Timothy 1:9"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["2 Timothy 1:9"]}
+												</p>
+											</div>
+										)}
+								</strong>
+								.
+							</p>
+						</div>
+						<div>
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
+								C. Justification
+							</h3>
+							<p className="xl:text-lg 3xl:text-h4">
+								We teach that justification before God is an act of God{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Romans 8:33")}
+								>
+									(Romans 8:33)
+									{visibleVerse === "Romans 8:33" &&
+										verseData["Romans 8:33"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Romans 8:33"]}
+												</p>
+											</div>
+										)}
+								</strong>
+								, by which He declares righteous those who through faith in
+								Christ repent of their sins{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Luke 13:3")}
+								>
+									(Luke 13:3)
+									{visibleVerse === "Luke 13:3" && verseData["Luke 13:3"] && (
+										<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+											<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+												{verseData["Luke 13:3"]}
+											</p>
+										</div>
+									)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Acts 2:38")}
+								>
+									(Acts 2:38)
+									{visibleVerse === "Acts 2:38" && verseData["Acts 2:38"] && (
+										<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+											<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+												{verseData["Acts 2:38"]}
+											</p>
+										</div>
+									)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Acts 3:19")}
+								>
+									(Acts 3:19)
+									{visibleVerse === "Acts 3:19" && verseData["Acts 3:19"] && (
+										<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+											<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+												{verseData["Acts 3:19"]}
+											</p>
+										</div>
+									)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Acts 11:18")}
+								>
+									(Acts 11:18)
+									{visibleVerse === "Acts 11:18" && verseData["Acts 11:18"] && (
+										<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+											<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+												{verseData["Acts 11:18"]}
+											</p>
+										</div>
+									)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Romans 2:4")}
+								>
+									(Romans 2:4)
+									{visibleVerse === "Romans 2:4" && verseData["Romans 2:4"] && (
+										<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+											<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+												{verseData["Romans 2:4"]}
+											</p>
+										</div>
+									)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("2 Corinthians 7:10")}
+								>
+									(2 Corinthians 7:10)
+									{visibleVerse === "2 Corinthians 7:10" &&
+										verseData["2 Corinthians 7:10"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["2 Corinthians 7:10"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Isaiah 55:6-7")}
+								>
+									(Isaiah 55:6-7)
+									{visibleVerse === "Isaiah 55:6-7" &&
+										verseData["Isaiah 55:6-7"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Isaiah 55:6-7"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								and confess Him as sovereign Lord{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Romans 10:9-10")}
+								>
+									(Romans 10:9-10)
+									{visibleVerse === "Romans 10:9-10" &&
+										verseData["Romans 10:9-10"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Romans 10:9-10"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("1 Corinthians 12:3")}
+								>
+									(1 Corinthians 12:3)
+									{visibleVerse === "1 Corinthians 12:3" &&
+										verseData["1 Corinthians 12:3"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["1 Corinthians 12:3"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("2 Corinthians 4:5")}
+								>
+									(2 Corinthians 4:5)
+									{visibleVerse === "2 Corinthians 4:5" &&
+										verseData["2 Corinthians 4:5"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["2 Corinthians 4:5"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Philippians 2:11")}
+								>
+									(Philippians 2:11)
+									{visibleVerse === "Philippians 2:11" &&
+										verseData["Philippians 2:11"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Philippians 2:11"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								. This righteousness is apart from any virtue or work of man{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Romans 3:20")}
+								>
+									(Romans 3:20)
+									{visibleVerse === "Romans 3:20" &&
+										verseData["Romans 3:20"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Romans 3:20"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								and involves the imputation of our sins to Christ{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Colossians 2:14")}
+								>
+									(Colossians 2:14)
+									{visibleVerse === "Colossians 2:14" &&
+										verseData["Colossians 2:14"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Colossians 2:14"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								and the imputation of Christ’s righteousness to us{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("1 Corinthians 1:30")}
+								>
+									(1 Corinthians 1:30)
+									{visibleVerse === "1 Corinthians 1:30" &&
+										verseData["1 Corinthians 1:30"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["1 Corinthians 1:30"]}
+												</p>
+											</div>
+										)}
+								</strong>
+								. By this means God is enabled to “be just, and the justifier of
+								the one who has faith in Jesus”{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Romans 3:26")}
+								>
+									(Romans 3:26)
+									{visibleVerse === "Romans 3:26" &&
+										verseData["Romans 3:26"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Romans 3:26"]}
+												</p>
+											</div>
+										)}
 								</strong>
 								.
 							</p>
 						</div>
 
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
-								C. Justification
-							</h3>
-							<p>
-								We teach that justification before God is an act of God{" "}
-								<strong className=" text-red-600">(Romans 8:33)</strong>, by
-								which He declares righteous those who through faith in Christ
-								repent of their sins{" "}
-								<strong className=" text-red-600">
-									(Luke 13:3; Acts 2:38; 3:19; 11:18; Romans 2:4; 2 Corinthians
-									7:10; Isaiah 55:6-7)
-								</strong>{" "}
-								and confess Him as sovereign Lord{" "}
-								<strong className=" text-red-600">
-									(Romans 10:9-10; 1 Corinthians 12:3; 2 Corinthians 4:5;
-									Philippians 2:11)
-								</strong>
-								. This righteousness is apart from any virtue or work of man{" "}
-								<strong className=" text-red-600">(Romans 3:20; 4:6)</strong>{" "}
-								and involves the imputation of our sins to Christ{" "}
-								<strong className=" text-red-600">
-									(Colossians 2:14; 1 Peter 2:24)
-								</strong>{" "}
-								and the imputation of Christ’s righteousness to us{" "}
-								<strong className=" text-red-600">
-									(1 Corinthians 1:30; 2 Corinthians 5:21)
-								</strong>
-								. By this means God is enabled to “be just, and the justifier of
-								the one who has faith in Jesus”{" "}
-								<strong className=" text-red-600">(Romans 3:26)</strong>.
-							</p>
-						</div>
-
-						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								D. Sanctification
 							</h3>
-							<p>
+							<p className="xl:text-lg 3xl:text-h4">
 								1. We teach that every believer is sanctified{" "}
-								<strong className=" text-red-600">(set apart)</strong> unto God
+								<strong className="text-red-600">(set apart)</strong> unto God
 								by the death of our Lord Jesus Christ, is therefore declared to
 								be holy, and is therefore identified as a saint. This is
 								positional and instantaneous and should not be confused with
 								progressive sanctification. This sanctification has to do with
 								the believer’s standing, not his present walk or condition{" "}
-								<strong className=" text-red-600">
-									(Acts 20:32; 1 Corinthians 1:2, 30; 6:11; 2 Thessalonians
-									2:13; Hebrews 2:11; 3:1; 10:10, 14; 13:12; 1 Peter 1:2)
-								</strong>
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Acts 20:32")}
+								>
+									(Acts 20:32)
+									{visibleVerse === "Acts 20:32" && verseData["Acts 20:32"] && (
+										<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+											<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+												{verseData["Acts 20:32"]}
+											</p>
+										</div>
+									)}
+								</strong>{" "}
+								<br />
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("1 Corinthians 1:2")}
+								>
+									(1 Corinthians 1:2)
+									{visibleVerse === "1 Corinthians 1:2" &&
+										verseData["1 Corinthians 1:2"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["1 Corinthians 1:2"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("1 Corinthians 6:11")}
+								>
+									(1 Corinthians 6:11)
+									{visibleVerse === "1 Corinthians 6:11" &&
+										verseData["1 Corinthians 6:11"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["1 Corinthians 6:11"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("2 Thessalonians 2:13")}
+								>
+									(2 Thessalonians 2:13)
+									{visibleVerse === "2 Thessalonians 2:13" &&
+										verseData["2 Thessalonians 2:13"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["2 Thessalonians 2:13"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Hebrews 2:11")}
+								>
+									(Hebrews 2:11)
+									{visibleVerse === "Hebrews 2:11" &&
+										verseData["Hebrews 2:11"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Hebrews 2:11"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Hebrews 3:1")}
+								>
+									(Hebrews 3:1)
+									{visibleVerse === "Hebrews 3:1" &&
+										verseData["Hebrews 3:1"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Hebrews 3:1"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Hebrews 10:10")}
+								>
+									(Hebrews 10:10)
+									{visibleVerse === "Hebrews 10:10" &&
+										verseData["Hebrews 10:10"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Hebrews 10:10"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Hebrews 10:14")}
+								>
+									(Hebrews 10:14)
+									{visibleVerse === "Hebrews 10:14" &&
+										verseData["Hebrews 10:14"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Hebrews 10:14"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Hebrews 13:12")}
+								>
+									(Hebrews 13:12)
+									{visibleVerse === "Hebrews 13:12" &&
+										verseData["Hebrews 13:12"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Hebrews 13:12"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("1 Peter 1:2")}
+								>
+									(1 Peter 1:2)
+									{visibleVerse === "1 Peter 1:2" &&
+										verseData["1 Peter 1:2"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["1 Peter 1:2"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
 								.
 							</p>
-							<p>
+							<p className="xl:text-lg 3xl:text-h4">
 								2. We teach that there is also, by the work of the Holy Spirit,
 								a progressive sanctification by which the state of the believer
 								is brought closer to the standing the believer positionally
@@ -983,34 +3871,193 @@ const page = () => {
 								God and the empowering of the Holy Spirit, the believer is able
 								to live a life of increasing holiness in conformity to the will
 								of God, becoming more and more like our Lord Jesus Christ{" "}
-								<strong className=" text-red-600">
-									(John 17:17, 19; Romans 6:1-22; 2 Corinthians 3:18; 1
-									Thessalonians 4:3-4; 5:23)
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("John 17:17")}
+								>
+									(John 17:17)
+									{visibleVerse === "John 17:17" && verseData["John 17:17"] && (
+										<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+											<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+												{verseData["John 17:17"]}
+											</p>
+										</div>
+									)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("John 17:19")}
+								>
+									(John 17:19)
+									{visibleVerse === "John 17:19" && verseData["John 17:19"] && (
+										<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+											<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+												{verseData["John 17:19"]}
+											</p>
+										</div>
+									)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Romans 6:1-22")}
+								>
+									(Romans 6:1-22)
+									{visibleVerse === "Romans 6:1-22" &&
+										verseData["Romans 6:1-22"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Romans 6:1-22"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("2 Corinthians 3:18")}
+								>
+									(2 Corinthians 3:18)
+									{visibleVerse === "2 Corinthians 3:18" &&
+										verseData["2 Corinthians 3:18"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["2 Corinthians 3:18"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<br />
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("1 Thessalonians 4:3-4")}
+								>
+									(1 Thessalonians 4:3-4)
+									{visibleVerse === "1 Thessalonians 4:3-4" &&
+										verseData["1 Thessalonians 4:3-4"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["1 Thessalonians 4:3-4"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("1 Thessalonians 5:23")}
+								>
+									(1 Thessalonians 5:23)
+									{visibleVerse === "1 Thessalonians 5:23" &&
+										verseData["1 Thessalonians 5:23"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["1 Thessalonians 5:23"]}
+												</p>
+											</div>
+										)}
 								</strong>
 								.
 							</p>
-							<p>
+							<p className="xl:text-lg 3xl:text-h4">
 								3. We teach that every saved person is involved in a daily
-								conflict–the new creation in Christ doing battle against the
+								conflict– the new creation in Christ doing battle against the
 								flesh–but adequate provision is made for victory through the
 								power of the indwelling Holy Spirit. The struggle nevertheless
 								stays with the believer all through this earthly life and is
 								never completely ended. All claims to the eradication of sin in
 								this life are unscriptural. Eradication of sin is not possible,
 								but the Holy Spirit does provide for victory over sin{" "}
-								<strong className=" text-red-600">
-									(Galatians 5:16-25; Ephesians 4:22-24; Philippians 3:12;
-									Colossians 3:9-10; 1 Peter 1:14-16; 1 John 3:5-9)
-								</strong>
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Galatians 5:16-25")}
+								>
+									(Galatians 5:16-25)
+									{visibleVerse === "Galatians 5:16-25" &&
+										verseData["Galatians 5:16-25"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Galatians 5:16-25"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Ephesians 4:22-24")}
+								>
+									(Ephesians 4:22-24)
+									{visibleVerse === "Ephesians 4:22-24" &&
+										verseData["Ephesians 4:22-24"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Ephesians 4:22-24"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Philippians 3:12")}
+								>
+									(Philippians 3:12)
+									{visibleVerse === "Philippians 3:12" &&
+										verseData["Philippians 3:12"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Philippians 3:12"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("Colossians 3:9-10")}
+								>
+									(Colossians 3:9-10)
+									{visibleVerse === "Colossians 3:9-10" &&
+										verseData["Colossians 3:9-10"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["Colossians 3:9-10"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("1 Peter 1:14-16")}
+								>
+									(1 Peter 1:14-16)
+									{visibleVerse === "1 Peter 1:14-16" &&
+										verseData["1 Peter 1:14-16"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["1 Peter 1:14-16"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
+								<strong
+									className="text-red-600 cursor-pointer relative"
+									onClick={() => toggleVerse("1 John 3:5-9")}
+								>
+									(1 John 3:5-9)
+									{visibleVerse === "1 John 3:5-9" &&
+										verseData["1 John 3:5-9"] && (
+											<div className="max-h-28 xl:max-h-36 overflow-y-auto absolute left-0 top-full mt-1 p-2 w-64 bg-gray-100 dark:bg-black border border-gray-300 rounded shadow-lg z-10">
+												<p className="text-sm xl:text-[16px] 3xl:text-lg text-navy dark:text-white">
+													{verseData["1 John 3:5-9"]}
+												</p>
+											</div>
+										)}
+								</strong>{" "}
 								.
 							</p>
 						</div>
 
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								E. Security
 							</h3>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								1. We teach that all the redeemed, once saved, are kept by God’s
 								power and are thus secure in Christ forever{" "}
 								<strong className=" text-red-600">
@@ -1020,7 +4067,7 @@ const page = () => {
 								</strong>
 								.
 							</p>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								2. We teach that it is the privilege of believers to rejoice in
 								the assurance of their salvation through the testimony of God’s
 								Word, which, however, clearly forbids the use of Christian
@@ -1034,10 +4081,10 @@ const page = () => {
 						</div>
 
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								F. Separation from Sin
 							</h3>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								1. We teach that separation from sin is clearly called for
 								throughout the Old and New Testaments, and that the Scriptures
 								clearly indicate that in the last days apostasy and worldliness
@@ -1047,7 +4094,7 @@ const page = () => {
 								</strong>
 								.
 							</p>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								2. We teach that out of deep gratitude for the undeserved grace
 								of God granted to us and because our glorious God is so worthy
 								of our total consecration, all the saved should live in such a
@@ -1061,7 +4108,7 @@ const page = () => {
 								</strong>
 								.
 							</p>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								3. We teach that believers should be separated unto our Lord
 								Jesus Christ{" "}
 								<strong className=" text-red-600">
@@ -1082,17 +4129,17 @@ const page = () => {
 				</div>
 			</section>
 			<section className="py-10 bg-background px-6">
-				<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg mx-auto ">
-					<h2 className="text-h3 lg:text-h2 font-semibold text-navy dark:text-white mb-6 text-center">
+				<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg mx-auto 3xl:max-w-screen-2xl ">
+					<h2 className="text-h3 lg:text-h2 3xl:text-h1 font-semibold text-navy dark:text-white mb-6 text-center">
 						V. The Church
 					</h2>
 
 					<div className="space-y-4">
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								1. General Overview
 							</h3>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that all who place their faith in Jesus Christ are
 								immediately baptized by the Holy Spirit into one united
 								spiritual body, the church{" "}
@@ -1109,7 +4156,7 @@ const page = () => {
 								</strong>
 								.
 							</p>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that the formation of the church, the body of Christ,
 								began on the day of Pentecost{" "}
 								<strong className=" text-red-600">(Acts 2:1-21, 38-47)</strong>{" "}
@@ -1120,7 +4167,7 @@ const page = () => {
 								</strong>
 								.
 							</p>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that the church is thus a unique spiritual organism
 								designed by Christ, made up of all born again believers in this
 								present age{" "}
@@ -1133,7 +4180,7 @@ const page = () => {
 								</strong>
 								.
 							</p>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that the establishment and continuity of local churches
 								is clearly taught and defined in the New Testament Scriptures
 								<strong className=" text-red-600">
@@ -1150,10 +4197,10 @@ const page = () => {
 						</div>
 
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								A. The Church: Leaders
 							</h3>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that the one supreme authority for the church is Christ
 								<strong className=" text-red-600">
 									(1 Corinthians 11:3; Ephesians 1:22; Colossians 1:18)
@@ -1172,7 +4219,7 @@ const page = () => {
 								</strong>
 								.
 							</p>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that these leaders lead or rule as servants of Christ
 								<strong className=" text-red-600">
 									(1 Timothy 5:17-22)
@@ -1181,7 +4228,7 @@ const page = () => {
 								is to submit to their leadership
 								<strong className=" text-red-600">(Hebrews 13:7,17)</strong>.
 							</p>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach the importance of discipleship{" "}
 								<strong className=" text-red-600">
 									(Matthew 28:19-20; 2 Timothy 2:2)
@@ -1199,10 +4246,10 @@ const page = () => {
 						</div>
 
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								B. The Church: Autonomy
 							</h3>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach the autonomy of the local church, free from any
 								external authority or control, with the right of self-government
 								and freedom from the interference of any hierarchy of
@@ -1220,7 +4267,7 @@ const page = () => {
 								</strong>
 								.
 							</p>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that the purpose of the church is to glorify God
 								<strong className=" text-red-600">(Ephesians 3:21)</strong> by
 								building itself up in the faith{" "}
@@ -1247,10 +4294,10 @@ const page = () => {
 						</div>
 
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								C. The Church: Equipping
 							</h3>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach the calling of all saints to the work of the ministry
 								<strong className=" text-red-600">
 									(1 Corinthians 15:58; Ephesians 4:12; Revelation 22:12)
@@ -1285,10 +4332,10 @@ const page = () => {
 						</div>
 
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								D. The Church: Signs and Wonders
 							</h3>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that there were two kinds of gifts given the early
 								church: miraculous gifts of divine revelation and healing, given
 								temporarily in the apostolic era for the purpose of confirming
@@ -1311,7 +4358,7 @@ const page = () => {
 								equipping gifts given for edification
 								<strong className=" text-red-600">(Romans 12:6-8)</strong>.
 							</p>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that the confirming gifts of the apostolic period–
 								healing, speaking in tongues{" "}
 								<strong className=" text-red-600">
@@ -1330,7 +4377,7 @@ const page = () => {
 								</strong>
 								.
 							</p>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that no one possesses the gift of healing today but
 								that God does hear and answer the prayer of faith on the part of
 								every believer and will answer in accordance with His own
@@ -1344,10 +4391,10 @@ const page = () => {
 						</div>
 
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								E. The Church: Ordinances
 							</h3>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that two ordinances have been committed to the local
 								church: baptism and the Lord’s Supper{" "}
 								<strong className=" text-red-600">(Acts 2:38-42)</strong>.
@@ -1361,7 +4408,7 @@ const page = () => {
 								body of Christ{" "}
 								<strong className=" text-red-600">(Acts 2:41-42)</strong>.
 							</p>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that the Lord’s Supper is the commemoration and
 								proclamation of His death until He comes, and should be always
 								preceded by solemn self-examination{" "}
@@ -1382,17 +4429,17 @@ const page = () => {
 			</section>
 
 			<section className="py-10 bg-background px-6">
-				<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg mx-auto ">
-					<h2 className="text-h3 lg:text-h2 font-semibold text-navy dark:text-white mb-6 text-center">
+				<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg mx-auto 3xl:max-w-screen-2xl ">
+					<h2 className="text-h3 lg:text-h2 3xl:text-h1 font-semibold text-navy dark:text-white mb-6 text-center">
 						VI. The Spiritual Realm
 					</h2>
 
 					<div className="space-y-4">
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								A. Angels
 							</h3>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that angels are created beings and are therefore not to
 								be worshipped. Although they are a higher order of creation than
 								man, they are created to serve God and to worship Him{" "}
@@ -1402,7 +4449,7 @@ const page = () => {
 								</strong>
 								.
 							</p>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that Satan is a created angel and the author of sin. He
 								incurred the judgment of God by rebelling against his Creator,
 								by taking numerous angels with Him in his fall{" "}
@@ -1429,10 +4476,10 @@ const page = () => {
 						</div>
 
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								B. Death
 							</h3>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that physical death involves no loss of our immaterial
 								consciousness{" "}
 								<strong className=" text-red-600">(Revelation 6:9-11)</strong>,
@@ -1456,7 +4503,7 @@ const page = () => {
 								joyful fellowship with our Lord Jesus Christ{" "}
 								<strong className=" text-red-600">(2 Corinthians 5:8)</strong>.
 							</p>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach the bodily resurrection of all men, the saved to
 								eternal life{" "}
 								<strong className=" text-red-600">
@@ -1468,7 +4515,7 @@ const page = () => {
 								</strong>
 								.
 							</p>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that the souls of the unsaved at death are kept under
 								punishment in hell until the second resurrection{" "}
 								<strong className=" text-red-600">
@@ -1489,16 +4536,16 @@ const page = () => {
 						</div>
 					</div>
 
-					<h2 className="text-h3 lg:text-h2 font-semibold text-navy dark:text-white mb-6 text-center pt-10">
+					<h2 className="text-h3 lg:text-h2 3xl:text-h1 font-semibold text-navy dark:text-white mb-6 text-center pt-10">
 						VII. Future Things in Scripture
 					</h2>
 
 					<div className="space-y-4">
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								A. The Rapture of the Church
 							</h3>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach the personal, bodily return of our Lord Jesus Christ{" "}
 								<strong className=" text-red-600">
 									(1 Thessalonians 4:16; Titus 2:13)
@@ -1519,10 +4566,10 @@ const page = () => {
 						</div>
 
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								B. The Tribulation Period
 							</h3>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that immediately following the removal of the church
 								from the earth{" "}
 								<strong className=" text-red-600">
@@ -1553,10 +4600,10 @@ const page = () => {
 						</div>
 
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								C. The Second Coming of Christ & His Millennial Reign
 							</h3>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that after the tribulation period, Christ will come to
 								earth to occupy the throne of David{" "}
 								<strong className=" text-red-600">
@@ -1577,7 +4624,7 @@ const page = () => {
 								</strong>
 								.
 							</p>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that the kingdom itself will be the fulfillment of
 								God’s promise to Israel{" "}
 								<strong className=" text-red-600">
@@ -1600,7 +4647,7 @@ const page = () => {
 								</strong>
 								.
 							</p>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that this time of our Lord’s reign will be
 								characterized by harmony, justice, peace, righteousness, and
 								long life{" "}
@@ -1613,10 +4660,10 @@ const page = () => {
 						</div>
 
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								D. The Judgment of the Lost and Hell
 							</h3>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that following the release of Satan after the thousand
 								year reign of Christ{" "}
 								<strong className=" text-red-600">(Revelation 20:7)</strong>,
@@ -1636,7 +4683,7 @@ const page = () => {
 								<strong className=" text-red-600">(Revelation 20:11-13)</strong>
 								.
 							</p>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that this resurrection of the unsaved dead to judgment
 								will be a physical resurrection, whereupon receiving their
 								judgment{" "}
@@ -1651,10 +4698,10 @@ const page = () => {
 						</div>
 
 						<div>
-							<h3 className="text-lg font-semibold text-navy dark:text-white mb-2">
+							<h3 className="text-lg xl:text-h3 3xl:text-h2 font-semibold text-navy dark:text-white mb-2">
 								E. Eternity
 							</h3>
-							<p>
+							<p className=" xl:text-lg 3xl:text-h4">
 								We teach that after the closing of the millennium, the temporary
 								release of Satan, and the judgment of unbelievers{" "}
 								<strong className=" text-red-600">

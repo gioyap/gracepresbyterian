@@ -34,8 +34,8 @@ export default function About() {
 
 			{/* Our Mission */}
 			<section className="flex items-center justify-center bg-background border-b-2 border-yellow">
-				<div className="max-w-screen-lg mx-auto text-center">
-					<div className=" text-navy dark:text-white px-6 text-md md:text-h3">
+				<div className=" md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg 3xl:max-w-screen-2xl mx-auto text-center">
+					<div className=" text-navy dark:text-white px-6 text-md md:text-h3 3xl:text-h2">
 						<p>
 							We are a movement of men and women who have encountered God and
 							committed our lives to the Lord, focused on making an impact
@@ -45,7 +45,7 @@ export default function About() {
 					</div>
 					<h1
 						onClick={toggleMission}
-						className="text-h2 md:text-h1 mt-10 mb-4 font-bold cursor-pointer text-navy dark:text-white"
+						className="text-h2 md:text-h1 3xl:text-title mt-10 mb-4 font-bold cursor-pointer text-navy dark:text-white"
 					>
 						Our Mission
 					</h1>
@@ -56,16 +56,16 @@ export default function About() {
 								: "max-h-0 opacity-0"
 						}`}
 					>
-						<p className="mb-4 px-6 text-md md:text-h3 text-navy dark:text-white">
+						<p className="mb-4 px-6 text-md md:text-h3 text-navy dark:text-white 3xl:text-h2">
 							To honor God and make Christ-committed followers who will make
 							Christ-committed followers.
 						</p>
-						<p className="mb-4 font-medium px-6 text-md md:text-h3 text-navy dark:text-white">
+						<p className="mb-4 font-medium px-6 text-md md:text-h3 text-navy dark:text-white 3xl:text-h2">
 							“Go and make disciples of all nations, baptizing them in the name
 							of the Father and of the Son and of the Holy Spirit, and teaching
 							them to obey everything I have commanded you.”
 						</p>
-						<p className="italic font-bold px-6 text-md md:text-h3 text-navy dark:text-white">
+						<p className="italic font-bold px-6 text-md md:text-h3 text-navy dark:text-white 3xl:text-h2">
 							Matthew 28:19-20
 						</p>
 					</div>
@@ -74,10 +74,10 @@ export default function About() {
 
 			{/* Our Vision */}
 			<section className="flex items-center justify-center bg-background border-b-2 border-yellow">
-				<div className="max-w-screen-lg mx-auto text-center pb-10">
+				<div className=" md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg 3xl:max-w-screen-2xl mx-auto text-center pb-10">
 					<h1
 						onClick={toggleVision}
-						className="text-h2 md:text-h1 mb-4 font-bold cursor-pointer text-navy dark:text-white"
+						className="text-h2 md:text-h1 3xl:text-title mb-4 font-bold cursor-pointer text-navy dark:text-white"
 					>
 						Our Vision
 					</h1>
@@ -88,7 +88,7 @@ export default function About() {
 								: "max-h-0 opacity-0"
 						}`}
 					>
-						<p className="mb-4 font-medium px-6 text-md md:text-h3 text-navy dark:text-white">
+						<p className="mb-4 font-medium px-6 text-md md:text-h3 text-navy dark:text-white 3xl:text-h2">
 							Our vision is to see a movement of millions of committed followers
 							of the Lord Jesus Christ meeting in small groups and transforming
 							lives, families, communities, and nations, for the glory of God.
@@ -99,10 +99,10 @@ export default function About() {
 
 			{/* Our Core Values */}
 			<section className="bg-background border-b-2 border-yellow">
-				<div className="max-w-screen-md mx-auto px-4 text-navy dark:text-white mb-6">
+				<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg 3xl:max-w-screen-2xl mx-auto px-4 text-navy dark:text-white mb-6">
 					<h1
 						onClick={toggleValues}
-						className="text-h2 md:text-h1 font-bold cursor-pointer text-navy dark:text-white mb-6 text-center"
+						className="text-h2 md:text-h1 3xl:text-title font-bold cursor-pointer text-navy dark:text-white mb-6 text-center"
 					>
 						Our Core Values
 					</h1>
@@ -113,7 +113,7 @@ export default function About() {
 								: "max-h-0 opacity-0"
 						}`}
 					>
-						<div className="space-y-6 px-6 pb-10">
+						<div className="space-y-6 px-6 pb-10 3xl:text-h2">
 							<div>
 								<h2 className=" text-md md:text-h3 font-semibold mb-2">
 									Love God, Love Others
@@ -183,10 +183,10 @@ export default function About() {
 			</section>
 
 			<section className="flex items-center justify-center">
-				<div className="max-w-screen-lg mx-auto pb-10">
+				<div className=" md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg 3xl:max-w-screen-2xl mx-auto pb-10">
 					<Link
 						href="/about/statement"
-						className="font-bold text-h2 md:text-h1 text-navy dark:text-white"
+						className="font-bold text-h2 md:text-h1 3xl:text-title text-navy dark:text-white"
 					>
 						Statement of Faith
 					</Link>
