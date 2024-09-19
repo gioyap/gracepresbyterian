@@ -1,12 +1,12 @@
-import { ThemeSwitcher } from "@/components/theme-switcher";
 import { GeistSans } from "geist/font/sans";
 import { ThemeProvider } from "next-themes";
-
+import Script from "next/script"; // Import the Next.js Script component
 import "./globals.css";
 import { Header } from "@/components/header";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 
-const defaultUrl = process.env.VERCEL_URL
-	? `https://${process.env.VERCEL_URL}`
+const defaultUrl = process.env.NEXT_PUBLIC_BASE_URL
+	? `https://${process.env.NEXT_PUBLIC_BASE_URL}`
 	: "http://localhost:3000";
 
 export const metadata = {
@@ -20,7 +20,7 @@ export const metadata = {
 		type: "website",
 		images: [
 			{
-				url: `${defaultUrl}/images/temple.jpg`, // Path to your Open Graph image
+				url: `${defaultUrl}/images/member.jpg`,
 				width: 1200,
 				height: 630,
 				alt: "Grace Presbyterian Church",
@@ -44,7 +44,7 @@ export default function RootLayout({
 		<html lang="en" className={GeistSans.className} suppressHydrationWarning>
 			<head>
 				<link
-					href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+					href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900&display=swap"
 					rel="stylesheet"
 				/>
 				<link rel="icon" href="/images/cross.png" />
@@ -66,7 +66,7 @@ export default function RootLayout({
 							</nav>
 							{/* Main Body */}
 							<div className="flex w-full flex-col p-0">{children}</div>
-							<footer className="w-full flex items-center justify-center border-t mx-auto text-center text-[8px] md:text-[12px] gap-x-6 md:gap-x-10 py-2 whitespace-nowrap ">
+							<footer className="text-navy dark:text-white w-full flex items-center justify-center border-t mx-auto text-center text-[8px] md:text-[12px] gap-x-6 md:gap-x-10 py-2 whitespace-nowrap ">
 								<p>
 									<a
 										href="https://www.facebook.com/presbyterian.church.984"
@@ -93,6 +93,13 @@ export default function RootLayout({
 						</div>
 					</main>
 				</ThemeProvider>
+
+				{/* Tawk.to Script */}
+				<Script
+					src="https://embed.tawk.to/66ea200383ab531891e8330f/1i818q3uu"
+					strategy="afterInteractive"
+					crossOrigin="anonymous"
+				/>
 			</body>
 		</html>
 	);

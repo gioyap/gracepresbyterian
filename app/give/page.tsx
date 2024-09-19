@@ -45,7 +45,7 @@ const Page = () => {
 					<p className="md:text-2xl font-semibold">– PROVERBS 3:9-10</p>
 				</div>
 			</section>
-			<section className="md:hidden lg:flex lg:justify-between lg:items-start xl:max-w-screen-lg xl:mx-auto">
+			<section className="md:hidden lg:flex lg:justify-between lg:items-start xl:max-w-screen-lg xl:mx-auto text-navy dark:text-white">
 				{/* Text section */}
 				<div className="p-6 font-medium text-lg lg:text-h3 lg:w-1/2 lg:text-left lg:pt-20 lg:pl-20 xl:pt-36 xl:pl-0">
 					<p>

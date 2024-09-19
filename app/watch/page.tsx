@@ -169,7 +169,7 @@ const Page = () => {
 				</div>
 			</section>
 			<section className="p-6">
-				<div className="max-w-screen-xl mx-auto text-center text-navy">
+				<div className="max-w-screen-xl mx-auto text-center text-navy dark:text-white">
 					<h1 className=" text-h2 md:text-h1 font-bold mb-4">
 						Online Messages
 					</h1>
@@ -241,9 +241,9 @@ const Page = () => {
 				</div>
 			</section>
 
-			<section className="p-6 max-w-screen-xl mx-auto px-10">
+			<section className="p-6 max-w-screen-xl mx-auto px-10 text-navy dark:text-white">
 				<div>
-					<h1 className="text-h2 md:text-h1 text-center font-bold text-navy">
+					<h1 className="text-h2 md:text-h1 text-center font-bold">
 						Special Messages
 					</h1>
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 my-8">

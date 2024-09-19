@@ -9,7 +9,7 @@ const fetchThumbnails = async () => {
 	const { data: john, error } = await supabase
 		.from("john") // Adjust the table name as necessary
 		.select("*")
-		.order("created_at", { ascending: false });
+		.order("id", { ascending: false });
 
 	if (error) {
 		console.error(error);

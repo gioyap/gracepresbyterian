@@ -209,7 +209,7 @@ export default function Index() {
 							<h3 className="text-xl lg:text-h3 3xl:text-h1 font-semibold text-navy dark:text-white 3xl:mb-4">
 								Bible Study Group
 							</h3>
-							<p className="text-sm lg:text-h3 3xl:text-h2 text-navy dark:text-white">
+							<p className="text-sm lg:text-h4 3xl:text-h2 text-navy dark:text-white">
 								Every Wednesday at 4:00 PM - 5:30 PM
 							</p>
 						</li>
