@@ -29,7 +29,7 @@ export default async function SearchPage({
 	const perPage = 10;
 
 	// Use an absolute URL for fetching data
-	const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+	const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 	// Fetch search results based on the search query and page
 	const response = await fetch(
