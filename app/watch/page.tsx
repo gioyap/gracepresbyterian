@@ -185,7 +185,7 @@ const Page = () => {
 								{thumbnailsData.matthew.map((thumbnail: any) => (
 									<a
 										key={thumbnail.id}
-										href={thumbnail.href}
+										href={`/videos/matthew/${thumbnail.id}`}
 										className="bg-white rounded-xl shadow-2xl block w-40 transform duration-300 hover:scale-105 hover:shadow-3xl relative z-10"
 									>
 										<img
@@ -216,7 +216,7 @@ const Page = () => {
 								{thumbnailsData.john.map((thumbnail: any) => (
 									<a
 										key={thumbnail.id}
-										href={thumbnail.href}
+										href={`/videos/john/${thumbnail.id}`}
 										className="bg-white rounded-xl shadow-2xl block w-40 transform duration-300 hover:scale-105 hover:shadow-3xl relative z-10"
 									>
 										<img
@@ -251,7 +251,7 @@ const Page = () => {
 						{thumbnails.map((thumbnail) => (
 							<a
 								key={thumbnail.id}
-								href={thumbnail.href}
+								href={`/videos/special/${thumbnail.id}`}
 								className="bg-white rounded-xl shadow-2xl block transform duration-300 hover:scale-105 hover:shadow-3xl relative z-10"
 							>
 								<img
