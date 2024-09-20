@@ -49,7 +49,7 @@ const Page = async () => {
 						{thumbnailsData.map((thumbnail: any, index: any) => (
 							<Thumbnail
 								key={index}
-								href={thumbnail.href}
+								href={`/videos/john/${thumbnail.id}`}
 								imgSrc={thumbnail.imgSrc}
 								altText={thumbnail.altText}
 								title={thumbnail.title}
