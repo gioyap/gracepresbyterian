@@ -187,51 +187,7 @@ export const Header = () => {
 							Watch
 						</Link>
 					</li>
-					<li>
-						<Link
-							href="/connect"
-							onClick={handleLinkClick}
-							className="hover:underline"
-						>
-							Connect
-						</Link>
-					</li>
-					<li>
-						<Link
-							href="/missions"
-							onClick={handleLinkClick}
-							className="hover:underline"
-						>
-							Missions
-						</Link>
-					</li>
-					<li>
-						<Link
-							href="/youth"
-							onClick={handleLinkClick}
-							className="hover:underline"
-						>
-							Youth
-						</Link>
-					</li>
-					<li>
-						<Link
-							href="/events"
-							onClick={handleLinkClick}
-							className="hover:underline"
-						>
-							Events
-						</Link>
-					</li>
-					<li>
-						<Link
-							href="/resources"
-							onClick={handleLinkClick}
-							className="hover:underline"
-						>
-							Resources
-						</Link>
-					</li>
+
 					<li>
 						<button
 							onClick={toggleSearch}
