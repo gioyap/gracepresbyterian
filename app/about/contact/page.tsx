@@ -53,14 +53,14 @@ const Page = () => {
 							<div className="flex items-center gap-2 text-lg lg:text-h2">
 								<MdEmail className="text-sm lg:text-h4" />
 								<span className="text-sm lg:text-h4">
-									yapgioedrian@gmail.com
+									cgpcworshipteam2023@gmail.com
 								</span>
 							</div>
 
 							{/* Phone */}
 							<div className="flex items-center gap-2 text-lg lg:text-h2">
 								<FaPhoneVolume className="text-sm lg:text-h4" />
-								<span className="text-sm lg:text-h4">+63 9123456789</span>
+								<span className="text-sm lg:text-h4">+63 9327134450</span>
 							</div>
 						</div>
 					</div>
