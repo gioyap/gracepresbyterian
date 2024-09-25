@@ -25,6 +25,7 @@ const config = {
 				navy: {
 					DEFAULT: "#101b4b", // Main navy color
 					light: "#545e85", // Lighter navy color
+					deep: "#060b1d",
 				},
 				yellow: {
 					DEFAULT: "#f6d673", // Yellow color

@@ -1,9 +1,9 @@
 import { GeistSans } from "geist/font/sans";
 import { ThemeProvider } from "next-themes";
-import Script from "next/script"; // Import the Next.js Script component
 import "./globals.css";
 import { Header } from "@/components/header";
 import { ThemeSwitcher } from "@/components/theme-switcher";
+import { CookieConsent } from "@/components/CookiConsent";
 
 const defaultUrl = process.env.NEXT_PUBLIC_BASE_URL
 	? `https://${process.env.NEXT_PUBLIC_BASE_URL}`
@@ -79,12 +79,18 @@ export default function RootLayout({
 									2024
 								</p>
 								<p>
-									<a href="/terms" className="font-bold hover:underline">
+									<a
+										href="/terms-and-conditions"
+										className="font-bold hover:underline"
+									>
 										Terms and Condition
 									</a>
 								</p>
 								<p>
-									<a href="/policy" className="font-bold hover:underline">
+									<a
+										href="/privacy-policy"
+										className="font-bold hover:underline"
+									>
 										Private Policy
 									</a>
 								</p>
@@ -93,13 +99,7 @@ export default function RootLayout({
 						</div>
 					</main>
 				</ThemeProvider>
-
-				{/* Tawk.to Script */}
-				<Script
-					src="https://embed.tawk.to/66ea200383ab531891e8330f/1i818q3uu"
-					strategy="afterInteractive"
-					crossOrigin="anonymous"
-				/>
+				<CookieConsent />
 			</body>
 		</html>
 	);

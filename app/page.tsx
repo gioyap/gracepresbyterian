@@ -1,11 +1,30 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function Index() {
 	const [whoLoad, setWhoLoading] = useState(false);
 	const [whereLoad, setWhereLoading] = useState(false);
+	const [cookiesAccepted, setCookiesAccepted] = useState<boolean | null>(null);
+
+	useEffect(() => {
+		const savedPreference = localStorage.getItem("cookiesAccepted");
+		if (savedPreference !== null) {
+			setCookiesAccepted(JSON.parse(savedPreference));
+		}
+	}, []);
+
+	const handleAccept = () => {
+		setCookiesAccepted(true);
+		localStorage.setItem("cookiesAccepted", "true");
+	};
+
+	const handleDecline = () => {
+		setCookiesAccepted(false);
+		localStorage.setItem("cookiesAccepted", "false");
+	};
+
 	const router = useRouter();
 
 	const handleWho = () => {

@@ -188,15 +188,6 @@ export const Header = () => {
 						</Link>
 					</li>
 					<li>
-						<Link
-							href="/connect"
-							onClick={handleLinkClick}
-							className="hover:underline"
-						>
-							Connect
-						</Link>
-					</li>
-					<li>
 						<button
 							onClick={toggleSearch}
 							className={`${scrolled ? "text-black dark:text-white" : "text-white"}`}
