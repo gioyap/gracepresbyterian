@@ -41,7 +41,9 @@ const Page = async () => {
 				}}
 			>
 				<div className="absolute inset-0 bg-black opacity-30"></div>
-				<h1 className=" text-red-600 font-bold text-title">Messages</h1>
+				<h1 className=" text-red-600 font-bold text-h1 md:text-title">
+					Messages
+				</h1>
 			</section>
 			<section className="my-12">
 				<div className="lg:max-w-screen-md xl:max-w-screen-lg 3xl:max-w-screen-2xl mx-auto text-center text-navy p-6">

@@ -187,7 +187,15 @@ export const Header = () => {
 							Watch
 						</Link>
 					</li>
-
+					<li>
+						<Link
+							href="/connect"
+							onClick={handleLinkClick}
+							className="hover:underline"
+						>
+							Connect
+						</Link>
+					</li>
 					<li>
 						<button
 							onClick={toggleSearch}

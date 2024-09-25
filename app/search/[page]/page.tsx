@@ -33,11 +33,14 @@ export default async function SearchPage({
 
 	// Fetch search results based on the search query and page
 	const response = await fetch(
-		`${baseUrl}/api/search?s=${encodeURIComponent(searchQuery)}&page=${page}`
+		`${baseUrl}/api/search?s=${encodeURIComponent(searchQuery)}&page=${page}`,
+		{
+			cache: "no-cache", // Ensures it always fetches fresh data
+		}
 	);
 
 	if (!response.ok) {
-		notFound(); // Handle 404
+		notFound();
 	}
 
 	const data = await response.json();
