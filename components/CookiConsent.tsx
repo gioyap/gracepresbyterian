@@ -26,7 +26,7 @@ export const CookieConsent = () => {
 		<>
 			{/* Cookie Consent Popup */}
 			{cookiesAccepted === null && (
-				<div className="fixed bottom-0 w-full bg-navy-deep text-white p-4 text-center flex flex-col items-center gap-4">
+				<div className="fixed bottom-0 w-full bg-navy-deep text-white p-4 text-center flex flex-col items-center gap-4 z-50">
 					<div className="md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-lg 3xl:max-w-screen-2xl mx-auto">
 						<p className="text-sm mb-4">
 							We use cookies to improve your experience. By continuing to use
